@@ -1,0 +1,6 @@
+{
+  "categories": ["Utility"],
+  "executableName": "attendance-app-linux-x64",
+  "dest": "out/installers",
+  "src": "out/attendance-app-linux-x64"
+}
