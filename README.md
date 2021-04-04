@@ -8,3 +8,5 @@
 
 npx electron-packager . app --platform linux --arch x64 --out dist
 npx electron-installer-debian --src dist/app-linux-x64/ --dest dist/installers/ --arch amd64
+
+[electron-installer-debian-package](https://www.christianengvall.se/electron-installer-debian-package/)
