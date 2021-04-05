@@ -2,8 +2,8 @@
   "name": "attendance-app",
   "version": "0.1.0",
   "author": "tonyvx",
-  "description": "My Electron app",
-  "main": "main.js",
+  "description": "Attendance Manager",
+  "main": "electron-app.js",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-deb": "^6.0.0-beta.54",
@@ -11,25 +11,31 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "electron": "^12.0.2",
+    "electron-builder": "^22.10.5",
     "electron-installer-debian": "^3.1.0"
   },
   "scripts": {
     "start": "electron-forge start",
+    "react": " cd react-app/; npm run react; cd ..",
+    "watch": " cd react-app/; npm run watch; cd ..",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "debian": "electron-installer-debian --arch amd64 --config debian.json"
   },
   "dependencies": {
+    "electron-context-menu": "^2.5.0",
     "electron-squirrel-startup": "^1.0.0"
   },
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "./public/attendance.png"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "attendance_app"
+            "name": "Attendance Manager"
           }
         },
         {

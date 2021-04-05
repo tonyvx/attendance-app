@@ -57,6 +57,10 @@ const { dialog } = require("electron");
   );
 ```
 
+## Saving to home folder OS specific
+
+[app.getPath(name)](https://github.com/electron/electron/blob/master/docs/api/app.md#appgetpathname)
+
 # Package and distribute the application
 
 ## Import Electron Forge to your app folder:
