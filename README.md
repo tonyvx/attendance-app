@@ -1,6 +1,6 @@
 # Create Electron starter app
 
-## Folder structre
+## Folder structure
     attendance-app/
     ├── package.json
     ├── main.js
@@ -13,6 +13,48 @@
 mkdir attendance-app && cd attendance-app
 npm init -y
 npm i --save-dev electron
+```
+
+## Modifying menu
+
+```js
+const { Menu } = require("electron");
+
+var menu = Menu.buildFromTemplate([
+    {
+      label: "Menu",
+      submenu: [
+        {
+          label: "Open CSV",
+          async click() {
+            await openCSVFile(win);
+          },
+        },
+        { label: "Verify Attendance" },
+        {
+          label: "Exit",
+          click() {
+            app.quit();
+          },
+        },
+      ],
+    },
+  ]);
+  Menu.setApplicationMenu(menu);
+```
+
+## Open File Dialog
+```js
+const { dialog } = require("electron");
+
+ var file = await dialog.showOpenDialog(
+    (browserWindow,
+    {
+      title: "select a file",
+      properties: ["openFile"],
+      filters: [{ name: "csv", extensions: ["csv"] }],
+    })
+  );
 ```
 
 # Package and distribute the application
@@ -29,6 +71,7 @@ npx electron-forge import
 npm run make
 ```
 
+
 [www.electronjs.org/quick-start](https://www.electronjs.org/docs/tutorial/quick-start)
 
 [package-and-distribute-the-application](https://www.electronjs.org/docs/tutorial/quick-start#package-and-distribute-the-application)
@@ -39,3 +82,6 @@ npx electron-packager . app --platform linux --arch x64 --out dist
 npx electron-installer-debian --src dist/app-linux-x64/ --dest dist/installers/ --arch amd64
 
 [electron-installer-debian-package](https://www.christianengvall.se/electron-installer-debian-package/) 
+
+
+[open dialog](https://www.electronjs.org/docs/api/dialog)
