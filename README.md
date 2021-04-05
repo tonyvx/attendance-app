@@ -3,9 +3,13 @@
 ## Folder structure
     attendance-app/
     ├── package.json
-    ├── main.js
-    ├── preload.js
-    └── index.html
+    ├── electron-app.js
+    ├── electron-app
+    └── ├── preload.js
+        └── submenu.js
+    ├── public
+    └── ├── index.html
+        └── react.js
     
  ## Install electron
  
