@@ -29,7 +29,8 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./public/attendance.png"
+        "icon": "./public/attendance.png",
+        "ignore": "^/react-app"
       },
       "makers": [
         {

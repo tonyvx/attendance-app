@@ -83,7 +83,7 @@ const RegisterAttendance = ({ title }) => {
           <QrReader delay={300} onError={handleError} onScan={handleScan} />
         </Card>
         <Card>
-          <Typography style={{ textAlign: "center" }}>
+          <Typography style={{ textAlign: "center", width: 400}}>
             {state.result} Scanned at : <span>{hours}</span>:
             <span>{minutes}</span>:<span>{seconds} </span>
             secs
