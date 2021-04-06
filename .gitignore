@@ -1,3 +1,4 @@
 node_modules/
 react-app/node_modules/
 out/
+public/react.js
