@@ -23,6 +23,7 @@
     "debian": "electron-installer-debian --arch amd64 --config debian.json"
   },
   "dependencies": {
+    "csv-parser": "^3.0.0",
     "electron-context-menu": "^2.5.0",
     "electron-squirrel-startup": "^1.0.0"
   },

@@ -1,10 +1,10 @@
-import { Card, Typography } from "@material-ui/core";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import React, { useState } from "react";
+import { Button, Card, Divider, Typography } from "@material-ui/core";
+import { createMuiTheme } from "@material-ui/core/styles";
+import React, { useEffect, useState } from "react";
 import QrReader from "react-qr-reader";
 import { useStopwatch } from "react-timer-hook";
 import "./App.css";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+// const { ipcRenderer } = window.require("electron");
 
 const theme = createMuiTheme({
   palette: {
@@ -13,33 +13,64 @@ const theme = createMuiTheme({
 });
 
 function App() {
+  const [message, setMessage] = useState("");
+  const [attendeInfo, setAttentdeInfo] = useState({});
+  useEffect(() => {
+    window.api.receive("fromMain", setMessage);
+    window.api.receive("fromMain_AttendeeInfo", setAttentdeInfo);
+  }, []);
   return (
     // <ThemeProvider theme={theme}>
-    //   <Router>
-    //     <Switch>
-    //       <Route exact path="/" component={RegisterAttendance} />
-    //       <Route
-    //         exact
-    //         path="/maundy-thursday"
-    //         component={() => <RegisterAttendance title={"Maundy Thursday"} />}
-    //       />
-    //       <Route
-    //         exact
-    //         path="/good-friday"
-    //         component={() => <RegisterAttendance title={"Good Friday"} />}
-    //       />
-    //       <Route
-    //         exact
-    //         path="/easter-vigil"
-    //         component={() => <RegisterAttendance title={"Easter Vigil"} />}
-    //       />
-    //     </Switch>
-    //   </Router>
+
     // </ThemeProvider>
-    <RegisterAttendance title={"Easter Vigil"} />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        {message ? (
+          <Typography>{message}</Typography>
+        ) : (
+          <ShowAttendeeInfo attendeInfo={attendeInfo} />
+        )}
+        <Button style={{ margin: 16 }}>Admit</Button>
+      </div>
+      <Divider
+        style={{ margin: 16, height: "90vh" }}
+        light={true}
+        orientation="vertical"
+      ></Divider>
+
+      <RegisterAttendance title={"Easter Vigil"} />
+    </div>
   );
 }
 
+const ShowAttendeeInfo = ({ attendeInfo }) => {
+  return attendeInfo ? (
+    <>
+      {Object.keys(attendeInfo).map((key) => (
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <div style={{ width: 150 }}>
+            <Typography>{key}</Typography>
+          </div>
+          <div style={{ width: 200 }}>
+            <Typography>{attendeInfo[key]}</Typography>
+          </div>
+        </div>
+      ))}
+    </>
+  ) : null;
+};
 const RegisterAttendance = ({ title }) => {
   const [state, setState] = useState({
     result: "No result",
@@ -54,11 +85,12 @@ const RegisterAttendance = ({ title }) => {
       setState({
         result: data,
       });
+      window.api.send("toMain", data);
       reset();
     }
   };
   const handleError = (err) => {
-    console.error(err);
+    console.error(err.message);
   };
   console.log(title);
   return (
@@ -83,7 +115,7 @@ const RegisterAttendance = ({ title }) => {
           <QrReader delay={300} onError={handleError} onScan={handleScan} />
         </Card>
         <Card>
-          <Typography style={{ textAlign: "center", width: 400}}>
+          <Typography style={{ textAlign: "center", width: 400 }}>
             {state.result} Scanned at : <span>{hours}</span>:
             <span>{minutes}</span>:<span>{seconds} </span>
             secs

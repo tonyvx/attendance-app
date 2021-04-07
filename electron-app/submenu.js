@@ -1,5 +1,7 @@
 const { app, dialog } = require("electron");
 const fs = require("fs");
+const csv = require("csv-parser");
+const { Notification } = require("electron");
 
 function submenu(mainWindow) {
   return [
@@ -9,6 +11,7 @@ function submenu(mainWindow) {
         await openCSVFile(mainWindow, "attendees.csv");
       },
     },
+
     {
       label: "Import Events",
       async click() {
@@ -50,7 +53,6 @@ async function openCSVFile(mainWindow1, fileName, type = "csv") {
         console.error(err);
         return;
       }
-      console.log(data);
       try {
         console.log(app.getPath("home"));
         fs.mkdir(
@@ -65,8 +67,44 @@ async function openCSVFile(mainWindow1, fileName, type = "csv") {
           data,
           type === "csv" ? "utf-8" : "binary"
         );
+
+        mainWindow1.webContents.send(
+          "fromMain",
+          app.getPath("home") + "/.attendance-app/" + fileName
+        );
       } catch (e) {
-        console.log("Failed to save the file !");
+        console.log("Failed to save the file !", e.message);
+        mainWindow1.webContents.send(
+          "fromMain",
+          app.getPath("home") + "/.attendance-app/" + fileName
+        );
       }
     });
 }
+
+const sendMessage = (mainWindow, message) => {
+  if (mainWindow) {
+    mainWindow.webContents.send("my-ipc-channel", {
+      message,
+    });
+  }
+};
+
+function findAttendee(data1, notifyAttendee) {
+  const rows = [];
+  fs.createReadStream(app.getPath("home") + "/.attendance-app/attendees.csv")
+    .pipe(csv())
+    .on("data", (row) => {
+      rows.push(row);
+    })
+    .on("end", () => {
+      console.log("CSV file successfully processed");
+      notifyAttendee(
+        rows.find((row) =>
+          row["First_Name"].toUpperCase().includes(data1.toUpperCase())
+        )
+      );
+    });
+}
+
+module.exports = { submenu, findAttendee };

@@ -2,3 +2,4 @@ node_modules/
 react-app/node_modules/
 out/
 public/react.js
+public/node_modules_web-vitals_dist_web-vitals_js.react.js

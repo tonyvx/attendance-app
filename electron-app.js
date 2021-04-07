@@ -1,18 +1,23 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain, Notification } = require("electron");
 const path = require("path");
 const contextMenu = require("electron-context-menu");
-const { submenu } = require("./electron-app/submenu");
+const { submenu, findAttendee } = require("./electron-app/submenu");
 
 contextMenu({});
 
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let mainWindow;
 function createWindow() {
-  let mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     titleBarStyle: "hidden",
-    width: 800,
+    width: 1024,
     height: 600,
     backgroundColor: "#312450",
     webPreferences: {
       preload: path.join(__dirname, "electron-app/preload.js"),
+      nodeIntegration: false,
+      contextIsolation: true, // protect against prototype pollution
     },
     // icon: "/home/avalantra/projects/attendance-app/public/attendance.png",
     // icon: path.join(__dirname, "public/attendance.png"),
@@ -45,4 +50,17 @@ app.on("activate", function () {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on("toMain", (event, args) => {
+  console.log(args);
+  findAttendee(
+    args,
+    (attendee) =>
+      // new Notification({
+      //   title: "Notifiation",
+      //   body: JSON.stringify(attendee),
+      // }).show()
+      mainWindow && mainWindow.webContents.send("fromMain_AttendeeInfo", attendee)
+  );
 });
