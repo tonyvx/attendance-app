@@ -1,13 +1,5 @@
-import {
-  Button,
-  Divider,
-  Paper,
-  Typography,
-} from "@material-ui/core";
-import {
-  createMuiTheme,
-  ThemeProvider,
-} from "@material-ui/core/styles";
+import { Button, Divider, Paper, Typography } from "@material-ui/core";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { useEffect, useState } from "react";
 import "./App.css";
@@ -15,7 +7,6 @@ import { Column, Row } from "./components/DesignComponents";
 import { RegisterAttendance } from "./components/RegisterAttendance";
 import { ShowAttendeeInfo } from "./components/ShowAttendeeInfo";
 import { EventSelector } from "./components/EventSelector";
-
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -29,6 +20,11 @@ function App() {
       }),
     [prefersDarkMode]
   );
+  const [attendeInfo, setAttentdeInfo] = useState({});
+
+  const [selectedEvent, setSelectedEvent] = React.useState({});
+
+  useEffect(() => window.api.receive("fromMain_AttendeeInfo", setAttentdeInfo));
 
   const [footerInfo, setFooterInfo] = useState("");
 
@@ -43,9 +39,22 @@ function App() {
         <div style={{ height: "90vh" }}>
           <Row>
             <Column size={"50%"}>
-              <ShowAttendeeInfo />
-              <EventSelector />
-              <Button style={{ margin: 16 }}>Admit</Button>
+              <ShowAttendeeInfo attendeInfo={attendeInfo} />
+              <EventSelector
+                selectedEvent={selectedEvent}
+                setSelectedEvent={setSelectedEvent}
+              />
+              <Button
+                style={{ margin: 16 }}
+                onClick={() =>
+                  window.api.send("toMain_ConfirmAttendance", {
+                    attendeeId: attendeInfo.id,
+                    eventId: selectedEvent.eventId,
+                  })
+                }
+              >
+                Confirm
+              </Button>
             </Column>
             <Divider
               orientation="vertical"

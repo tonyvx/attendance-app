@@ -1,27 +1,14 @@
 const { ipcRenderer, contextBridge } = require("electron");
-
-// window.addEventListener("DOMContentLoaded", () => {
-//   // const replaceText = (selector, text) => {
-//   //   const element = document.getElementById(selector);
-//   //   if (element) element.innerText = text;
-//   // };
-
-//   let footerText = "";
-//   for (const type of ["chrome", "node", "electron"]) {
-//     // replaceText(`${type}-version`, process.versions[type]);
-//     footerText += " " + type + "-version " + process.versions[type];
-//   }
-// });
+const { sendMessage } = require("./utils");
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => {
-    // whitelist channels
-    let validChannels = ["toMain", "toMain_Events"];
+    // whitelist channels 
+    let validChannels = ["toMain", "toMain_Events", "toMain_Attendee", "toMain_ConfirmAttendance"];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
-      new Notification("Attendance Manager (" + channel + ") " +data,).show();
     }
   },
   receive: (channel, func) => {

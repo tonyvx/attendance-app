@@ -18,7 +18,11 @@ export const RegisterAttendance = ({ title, size }) => {
       setState({
         result: data,
       });
-      window.api.send("toMain", data);
+      try {
+        window.api.send("toMain_Attendee", data);
+      } catch (e) {
+        console.log(e.message);
+      }
       reset();
     }
   };

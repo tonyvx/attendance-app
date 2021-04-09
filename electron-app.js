@@ -1,7 +1,13 @@
 const { app, BrowserWindow, Menu, ipcMain, Notification } = require("electron");
 const path = require("path");
 const contextMenu = require("electron-context-menu");
-const { submenu, findAttendee, getEvents } = require("./electron-app/submenu");
+const {
+  submenu,
+  findAttendee,
+  getEvents,
+  sendMessage,
+  updateRegistrations,
+} = require("./electron-app/utils");
 
 contextMenu({});
 
@@ -65,16 +71,16 @@ app.on("activate", function () {
 
 ipcMain.on("toMain", (event, args) => {
   console.log(args);
-  findAttendee(
-    args,
-    (attendee) =>
-      // new Notification({
-      //   title: "Notifiation",
-      //   body: JSON.stringify(attendee),
-      // }).show()
-      mainWindow &&
-      mainWindow.webContents.send("fromMain_AttendeeInfo", attendee)
-  );
+  sendMessage(args);
+});
+
+ipcMain.on("toMain_Attendee", (event, args) => {
+  console.log(args);
+  findAttendee(args, (attendee) => {
+    mainWindow &&
+      mainWindow.webContents.send("fromMain_AttendeeInfo", attendee);
+    sendMessage(args);
+  });
 });
 
 ipcMain.on("toMain_Events", (event, args) => {
@@ -84,4 +90,10 @@ ipcMain.on("toMain_Events", (event, args) => {
     (events) =>
       mainWindow && mainWindow.webContents.send("fromMain_Events", events)
   );
+});
+
+ipcMain.on("toMain_ConfirmAttendance", (event, args) => {
+  console.log(args);
+
+  updateRegistrations(args);
 });

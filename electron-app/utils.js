@@ -80,10 +80,11 @@ async function openCSVFile(mainWindow1, fileName, type = "csv") {
 }
 
 const sendMessage = (message) => {
+  console.log("sendMessage");
   new Notification({
     title: "Attendance Manager",
     body: message,
-    icon: path.join(__dirname, "/public/mail-142.png"),
+    icon: path.join(__dirname, "public/mail-142.png"),
   }).show();
 };
 
@@ -92,13 +93,19 @@ function findAttendee(data1, notifyAttendee) {
   fs.createReadStream(app.getPath("home") + "/.attendance-app/attendees.csv")
     .pipe(csv())
     .on("data", (row) => {
-      rows.push(row);
+      rows.push({
+        family: row["First_Name"],
+        children: row["Child_Names"],
+        id: row["FamilyId"],
+        emails: row["Emails"],
+      });
     })
     .on("end", () => {
       console.log("CSV file successfully processed");
+
       notifyAttendee(
         rows.find((row) =>
-          row["First_Name"].toUpperCase().includes(data1.toUpperCase())
+          row.family.toUpperCase().includes(data1.toUpperCase())
         )
       );
     });
@@ -118,4 +125,46 @@ function getEvents(publishEvents) {
     });
 }
 
-module.exports = { submenu, findAttendee, getEvents };
+function updateRegistrations(registrationInfo) {
+  const rows = [];
+  console.log("updateRegistrations", registrationInfo);
+
+  fs.createReadStream(app.getPath("home") + "/.attendance-app/registration.csv")
+    .pipe(csv())
+    .on("data", (row) => {
+      rows.push(row);
+    })
+    .on("end", () => {
+      console.log("CSV file successfully processed");
+      const pos = rows.findIndex(
+        (row) =>
+          row.attendeeId === registrationInfo.attendeeId &&
+          row.eventId === registrationInfo.eventId
+      );
+      if (pos === -1) {
+        rows.push(registrationInfo);
+      } else {
+        rows[pos] = registrationInfo;
+      }
+      const data = [
+        Object.keys(rows[0]).toString(),
+        ...rows.map((r) => Object.values(r).toString()),
+      ];
+      fs.writeFile(
+        app.getPath("home") + "/.attendance-app/registration.csv",
+        data.join("\n"),
+        function (err) {
+          if (err) return console.log(err);
+          console.log("Hello World > helloworld.txt");
+        }
+      );
+    });
+}
+
+module.exports = {
+  submenu,
+  findAttendee,
+  getEvents,
+  sendMessage,
+  updateRegistrations,
+};
