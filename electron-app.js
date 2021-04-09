@@ -1,7 +1,7 @@
 const { app, BrowserWindow, Menu, ipcMain, Notification } = require("electron");
 const path = require("path");
 const contextMenu = require("electron-context-menu");
-const { submenu, findAttendee } = require("./electron-app/submenu");
+const { submenu, findAttendee, getEvents } = require("./electron-app/submenu");
 
 contextMenu({});
 
@@ -10,17 +10,15 @@ contextMenu({});
 let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({
-    titleBarStyle: "hidden",
+    // titleBarStyle: "hidden",
     width: 1024,
     height: 600,
-    // backgroundColor: "#312450",
     webPreferences: {
       preload: path.join(__dirname, "electron-app/preload.js"),
       nodeIntegration: false,
       contextIsolation: true, // protect against prototype pollution
     },
-    // icon: "/home/avalantra/projects/attendance-app/public/attendance.png",
-    // icon: path.join(__dirname, "public/attendance.png"),
+    icon: path.join(__dirname, "public/attendance.png"),
   });
 
   var menu = Menu.buildFromTemplate([
@@ -40,6 +38,10 @@ function createWindow() {
         (footerText += type + " : " + process.versions[type] + " ");
     }
     mainWindow.webContents.send("fromMain_FooterInfo", footerText);
+    getEvents(
+      (events) =>
+        mainWindow && mainWindow.webContents.send("fromMain_Events", events)
+    );
   });
 
   mainWindow.on("closed", function () {
@@ -78,5 +80,8 @@ ipcMain.on("toMain", (event, args) => {
 ipcMain.on("toMain_Events", (event, args) => {
   console.log(args);
 
-  mainWindow && mainWindow.webContents.send("fromMain_Events", ["1", "2"]);
+  getEvents(
+    (events) =>
+      mainWindow && mainWindow.webContents.send("fromMain_Events", events)
+  );
 });

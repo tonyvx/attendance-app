@@ -34,7 +34,6 @@ export const RegisterAttendance = ({ title, size }) => {
           width: 400,
         }}
       >
-        <Typography align={"center"}>{title}</Typography>
         <Card style={{ margin: 8 }}>
           <QrReader delay={300} onError={handleError} onScan={handleScan} />
         </Card>

@@ -30,7 +30,6 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./public/attendance.png",
         "ignore": "^/react-app"
       },
       "makers": [
@@ -48,7 +47,22 @@
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
+          "config": {
+            "options": {
+              "name": "Attendance Manager",
+              "productName": "Attendance Manager",
+              "icon": "/home/avalantra/projects/attendance-app/public/attendance.png",
+              "categories": [
+                "Utility",
+                "Office"
+              ],
+              "maintainer": "tonyvx",
+              "homepage": "http://valantra.org"
+            }
+          },
+          "platforms": [
+            "linux"
+          ]
         }
       ]
     }

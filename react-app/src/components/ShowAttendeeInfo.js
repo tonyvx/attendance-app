@@ -1,7 +1,11 @@
 import { Typography } from "@material-ui/core";
-import React from "react";
+import React, { useEffect , useState} from "react";
 
-export const ShowAttendeeInfo = ({ attendeInfo }) => {
+export const ShowAttendeeInfo = () => {
+  const [attendeInfo, setAttentdeInfo] = useState({});
+
+  useEffect(() => window.api.receive("fromMain_AttendeeInfo", setAttentdeInfo));
+
   return attendeInfo ? (
     <>
       {Object.keys(attendeInfo).map((key) => (

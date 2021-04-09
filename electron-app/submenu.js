@@ -1,7 +1,8 @@
-const { app, dialog } = require("electron");
+const { app, dialog, Notification } = require("electron");
 const fs = require("fs");
 const csv = require("csv-parser");
-const { Notification } = require("electron");
+
+const path = require("path");
 
 function submenu(mainWindow) {
   return [
@@ -68,26 +69,22 @@ async function openCSVFile(mainWindow1, fileName, type = "csv") {
           type === "csv" ? "utf-8" : "binary"
         );
 
-        mainWindow1.webContents.send(
-          "fromMain",
-          app.getPath("home") + "/.attendance-app/" + fileName
+        sendMessage(
+          app.getPath("home") + "/.attendance-app/" + fileName + " updated."
         );
       } catch (e) {
         console.log("Failed to save the file !", e.message);
-        mainWindow1.webContents.send(
-          "fromMain",
-          app.getPath("home") + "/.attendance-app/" + fileName
-        );
+        sendMessage("Failed to save the file ! (Details - " + e.message + "),");
       }
     });
 }
 
-const sendMessage = (mainWindow, message) => {
-  if (mainWindow) {
-    mainWindow.webContents.send("my-ipc-channel", {
-      message,
-    });
-  }
+const sendMessage = (message) => {
+  new Notification({
+    title: "Attendance Manager",
+    body: message,
+    icon: path.join(__dirname, "/public/mail-142.png"),
+  }).show();
 };
 
 function findAttendee(data1, notifyAttendee) {
@@ -107,4 +104,18 @@ function findAttendee(data1, notifyAttendee) {
     });
 }
 
-module.exports = { submenu, findAttendee };
+function getEvents(publishEvents) {
+  const rows = [];
+  console.log("getEvents");
+  fs.createReadStream(app.getPath("home") + "/.attendance-app/events.csv")
+    .pipe(csv())
+    .on("data", (row) => {
+      rows.push(row);
+    })
+    .on("end", () => {
+      console.log("CSV file successfully processed");
+      publishEvents(rows);
+    });
+}
+
+module.exports = { submenu, findAttendee, getEvents };
