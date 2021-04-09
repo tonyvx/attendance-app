@@ -13,7 +13,7 @@ function createWindow() {
     titleBarStyle: "hidden",
     width: 1024,
     height: 600,
-    backgroundColor: "#312450",
+    // backgroundColor: "#312450",
     webPreferences: {
       preload: path.join(__dirname, "electron-app/preload.js"),
       nodeIntegration: false,
@@ -32,6 +32,15 @@ function createWindow() {
   Menu.setApplicationMenu(menu);
 
   mainWindow.loadFile("public/index.html");
+
+  mainWindow.webContents.on("did-finish-load", () => {
+    let footerText = " ";
+    for (const type of ["chrome", "node", "electron"]) {
+      process.versions[type] &&
+        (footerText += type + " : " + process.versions[type] + " ");
+    }
+    mainWindow.webContents.send("fromMain_FooterInfo", footerText);
+  });
 
   mainWindow.on("closed", function () {
     mainWindow = null;
@@ -61,6 +70,13 @@ ipcMain.on("toMain", (event, args) => {
       //   title: "Notifiation",
       //   body: JSON.stringify(attendee),
       // }).show()
-      mainWindow && mainWindow.webContents.send("fromMain_AttendeeInfo", attendee)
+      mainWindow &&
+      mainWindow.webContents.send("fromMain_AttendeeInfo", attendee)
   );
+});
+
+ipcMain.on("toMain_Events", (event, args) => {
+  console.log(args);
+
+  mainWindow && mainWindow.webContents.send("fromMain_Events", ["1", "2"]);
 });
