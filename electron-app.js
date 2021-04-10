@@ -70,12 +70,12 @@ app.on("activate", function () {
 });
 
 ipcMain.on("toMain", (event, args) => {
-  console.log(args);
+  console.log("channel: toMain (sendMessage) :", args);
   sendMessage(args);
 });
 
 ipcMain.on("toMain_Attendee", (event, args) => {
-  console.log(args);
+  console.log("channel: toMain_Attendee (findAttendee) :", args);
   findAttendee(args, (attendee) => {
     mainWindow &&
       mainWindow.webContents.send("fromMain_AttendeeInfo", attendee);
@@ -84,7 +84,7 @@ ipcMain.on("toMain_Attendee", (event, args) => {
 });
 
 ipcMain.on("toMain_Events", (event, args) => {
-  console.log(args);
+  console.log("channel: toMain_Events (getEvents) :", args);
 
   getEvents(
     (events) =>
@@ -93,7 +93,9 @@ ipcMain.on("toMain_Events", (event, args) => {
 });
 
 ipcMain.on("toMain_ConfirmAttendance", (event, args) => {
-  console.log(args);
-
+  console.log(
+    "channel: toMain_ConfirmAttendance (updateRegistrations) :",
+    args
+  );
   updateRegistrations(args);
 });

@@ -41,7 +41,7 @@ export const EventSelector = ({selectedEvent,setSelectedEvent}) => {
       >
         <option aria-label="None" value="" />
         {events.map((e) => (
-          <option value={e.id}>
+          <option value={e["eventId"]}>
             {e["Date"] +
               " - " +
               e["Event"] +

@@ -38,6 +38,7 @@ function submenu(mainWindow) {
 exports.submenu = submenu;
 
 async function openCSVFile(mainWindow1, fileName, type = "csv") {
+  console.log("openCSVFile ", fileName);
   var file = await dialog.showOpenDialog(
     (mainWindow1,
     {
@@ -46,16 +47,21 @@ async function openCSVFile(mainWindow1, fileName, type = "csv") {
       filters: [{ name: type, extensions: [type] }],
     })
   );
-  !file.canceled &&
+  const fileToImport =
+    !file.canceled &&
     Array.isArray(file.filePaths) &&
     file.filePaths.length > 0 &&
-    fs.readFile(file.filePaths[0], "utf8", (err, data) => {
+    file.filePaths[0];
+  console.log("openCSVFile : fileToImport : ", fileToImport);
+  fileToImport &&
+    fs.readFile(fileToImport, "utf8", (err, data) => {
       if (err) {
-        console.error(err);
+        console.error("openCSVFile ", err);
         return;
       }
       try {
-        console.log(app.getPath("home"));
+        console.log("openCSVFile updating to location", app.getPath("home"));
+
         fs.mkdir(
           app.getPath("home") + "/.attendance-app/",
           { recursive: true },
@@ -63,32 +69,40 @@ async function openCSVFile(mainWindow1, fileName, type = "csv") {
             if (dirErr) throw dirErr;
           }
         );
+
         fs.writeFileSync(
           app.getPath("home") + "/.attendance-app/" + fileName,
           data,
           type === "csv" ? "utf-8" : "binary"
         );
 
-        sendMessage(
-          app.getPath("home") + "/.attendance-app/" + fileName + " updated."
-        );
+        sendMessage(fileName + " updated.");
+
+        if (fileName === "events.csv")
+          getEvents(
+            (events) =>
+              mainWindow1 &&
+              mainWindow1.webContents.send("fromMain_Events", events)
+          );
       } catch (e) {
-        console.log("Failed to save the file !", e.message);
-        sendMessage("Failed to save the file ! (Details - " + e.message + "),");
+        console.log("openCSVFile : Failed to save the file !", e.message);
+        sendMessage(
+          "Failed to save " + fileName + " (Details - " + e.message + "),"
+        );
       }
     });
 }
 
 const sendMessage = (message) => {
-  console.log("sendMessage");
+  console.log("sendMessage", message);
   new Notification({
     title: "Attendance Manager",
     body: message,
-    icon: path.join(__dirname, "public/mail-142.png"),
   }).show();
 };
 
 function findAttendee(data1, notifyAttendee) {
+  console.log("findAttendee : ", data1);
   const rows = [];
   fs.createReadStream(app.getPath("home") + "/.attendance-app/attendees.csv")
     .pipe(csv())
@@ -101,7 +115,7 @@ function findAttendee(data1, notifyAttendee) {
       });
     })
     .on("end", () => {
-      console.log("CSV file successfully processed");
+      console.log("findAttendee : CSV file successfully processed");
 
       notifyAttendee(
         rows.find((row) =>
@@ -112,22 +126,22 @@ function findAttendee(data1, notifyAttendee) {
 }
 
 function getEvents(publishEvents) {
-  const rows = [];
   console.log("getEvents");
+  const rows = [];
   fs.createReadStream(app.getPath("home") + "/.attendance-app/events.csv")
     .pipe(csv())
     .on("data", (row) => {
       rows.push(row);
     })
     .on("end", () => {
-      console.log("CSV file successfully processed");
+      console.log("getEvents : CSV file successfully processed");
       publishEvents(rows);
     });
 }
 
 function updateRegistrations(registrationInfo) {
-  const rows = [];
   console.log("updateRegistrations", registrationInfo);
+  const rows = [];
 
   fs.createReadStream(app.getPath("home") + "/.attendance-app/registration.csv")
     .pipe(csv())
@@ -135,7 +149,7 @@ function updateRegistrations(registrationInfo) {
       rows.push(row);
     })
     .on("end", () => {
-      console.log("CSV file successfully processed");
+      console.log("updateRegistrations : CSV file successfully processed");
       const pos = rows.findIndex(
         (row) =>
           row.attendeeId === registrationInfo.attendeeId &&
@@ -154,8 +168,12 @@ function updateRegistrations(registrationInfo) {
         app.getPath("home") + "/.attendance-app/registration.csv",
         data.join("\n"),
         function (err) {
-          if (err) return console.log(err);
-          console.log("Hello World > helloworld.txt");
+          if (err)
+            return console.log(
+              "updateRegistrations : Error writing file ",
+              err
+            );
+          console.log("updateRegistrations : Successfully updated file");
         }
       );
     });
