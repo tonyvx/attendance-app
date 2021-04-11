@@ -4,7 +4,7 @@ import QrReader from "react-qr-reader";
 import { useStopwatch } from "react-timer-hook";
 import { CentreAlign } from "./DesignComponents";
 
-export const RegisterAttendance = ({ title, size }) => {
+export const ScanAttendance = ({ title, size }) => {
   const [state, setState] = useState({
     result: "No result",
   });
