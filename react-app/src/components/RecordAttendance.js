@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
   attendeeDetails: {
     width: 400,
   },
+  button: {
+    margin: theme.spacing(2),
+  },
 }));
 
 export const RecordAttendance = () => {
@@ -91,7 +94,7 @@ export const RecordAttendance = () => {
       </Grid>
       <Grid item xs={12} className={classes.paper}>
         <Button
-          style={{ margin: theme.spacing(2) }}
+          className={classes.button}
           onClick={() =>
             window.api.send("toMain_ConfirmAttendance", {
               attendeeId: attendeInfo.id,

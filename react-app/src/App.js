@@ -6,7 +6,7 @@ import {
   makeStyles,
   ThemeProvider
 } from "@material-ui/core/styles";
-import { RegisterAttendance } from "./components/ScanAttendance";
+import { ScanAttendance } from "./components/ScanAttendance";
 import { RecordAttendance } from "./components/RecordAttendance";
 
 export const useStyles = makeStyles((theme) => ({
@@ -50,7 +50,7 @@ function App() {
             <RecordAttendance />
           </Grid>
           <Grid item xs={6} className={classes.panels}>
-            <RegisterAttendance />
+            <ScanAttendance />
           </Grid>
           <Grid item xs={12} className={classes.headerAndFooter}>
             <Typography>{footerInfo}</Typography>
