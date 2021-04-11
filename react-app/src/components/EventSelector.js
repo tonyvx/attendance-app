@@ -5,13 +5,13 @@ import React, { useEffect, useState } from "react";
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 60,
+    width: 400,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
 }));
-export const EventSelector = ({selectedEvent,setSelectedEvent}) => {
+export const EventSelector = ({ selectedEvent, setSelectedEvent, width }) => {
   const classes = useStyles();
   const [events, setEvents] = useState([]);
 

@@ -1,31 +1,32 @@
-import {
-  Button,
-  Divider,
-  Paper,
-  Typography,
-  TextField,
-} from "@material-ui/core";
+import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
 import {
   createMuiTheme,
-  ThemeProvider,
   makeStyles,
+  ThemeProvider,
 } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { Column, Row } from "./components/DesignComponents";
+import { EventSelector } from "./components/EventSelector";
 import { RegisterAttendance } from "./components/RegisterAttendance";
 import { ShowAttendeeInfo } from "./components/ShowAttendeeInfo";
-import { EventSelector } from "./components/EventSelector";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    "& .MuiTextField-root": {
-      margin: theme.spacing(1),
-    },
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: "center",
+  },
+  leftText: {
+    textAlign: "left",
+  },
+  rightText: {
+    textAlign: "right",
+  },
+  container: {
+    height: "100vh",
+  },
+  attendeeDetails: {
+    width: 400,
   },
 }));
 
@@ -69,16 +70,29 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Paper style={{ height: "100vh", width: "100%" }}>
-        <Typography align={"center"}>{"smcboston.org"}</Typography>
-        <div style={{ height: "90vh" }}>
-          <Row>
-            <Column size={"50%"}>
-              <ShowAttendeeInfo attendeInfo={attendeInfo} />
-              <EventSelector
-                selectedEvent={selectedEvent}
-                setSelectedEvent={setSelectedEvent}
-              />
-              <div className={classes.root}>
+        <Grid container direction="row" justify="center" alignItems="center">
+          <Grid item xs={12} className={classes.paper}>
+            <Typography>{"smcboston.org"}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Grid
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              <Grid item xs={12} className={classes.paper}>
+                <ShowAttendeeInfo attendeInfo={attendeInfo} />
+              </Grid>
+             
+              <Grid item xs={12} className={classes.paper}>
+                <EventSelector
+                  selectedEvent={selectedEvent}
+                  setSelectedEvent={setSelectedEvent}
+                  width={400}
+                />
+              </Grid>
+              <Grid item xs={6} className={classes.rightText}>
                 <TextField
                   id="adultCount"
                   label="Adult Count"
@@ -88,7 +102,10 @@ function App() {
                     name: "adultCount",
                     id: "event-native-simple",
                   }}
+                  style={{ marginRight: 8, width: 192 }}
                 />
+              </Grid>
+              <Grid item xs={6} className={classes.leftText}>
                 <TextField
                   id="childrenCount"
                   label="Children Count"
@@ -98,30 +115,32 @@ function App() {
                     name: "childrenCount",
                     id: "event-native-simple",
                   }}
+                  style={{ marginLeft: 8, width: 192 }}
                 />
-              </div>
-              <Button
-                style={{ margin: 16 }}
-                onClick={() =>
-                  window.api.send("toMain_ConfirmAttendance", {
-                    attendeeId: attendeInfo.id,
-                    eventId: selectedEvent.eventId,
-                    ...count,
-                  })
-                }
-              >
-                Confirm
-              </Button>
-            </Column>
-            <Divider
-              orientation="vertical"
-              flexItem
-              style={{ height: "90vh" }}
-            ></Divider>
-            <RegisterAttendance size={"50%"} />
-          </Row>
-        </div>
-        <div style={{ textAlign: "center" }}>{footerInfo}</div>
+              </Grid>
+              <Grid item xs={12} className={classes.paper}>
+                <Button
+                  style={{ margin: 16 }}
+                  onClick={() =>
+                    window.api.send("toMain_ConfirmAttendance", {
+                      attendeeId: attendeInfo.id,
+                      eventId: selectedEvent.eventId,
+                      ...count,
+                    })
+                  }
+                >
+                  Confirm
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item xs={6} className={classes.paper}>
+            <RegisterAttendance />
+          </Grid>
+          <Grid item xs={12} className={classes.paper}>
+            <Typography>{footerInfo}</Typography>
+          </Grid>
+        </Grid>
       </Paper>
     </ThemeProvider>
   );

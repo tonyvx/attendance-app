@@ -1,19 +1,12 @@
-import { Typography } from "@material-ui/core";
-import React, { useEffect , useState} from "react";
+import { Typography, Container } from "@material-ui/core";
+import React from "react";
 
-export const ShowAttendeeInfo = ({attendeInfo}) => {
+export const ShowAttendeeInfo = ({ attendeInfo }) => {
   return attendeInfo ? (
-    <>
-      {Object.keys(attendeInfo).map((key) => (
-        <div style={{ display: "flex", flexDirection: "row", margin:16 }}>
-          <div style={{ width: 150 }}>
-            <Typography>{key.replace("_"," ")}</Typography>
-          </div>
-          <div>
-            <Typography>{attendeInfo[key]}</Typography>
-          </div>
-        </div>
-      ))}
-    </>
+    <Container style={{ width: 400 }}>
+      <Typography>Family : {attendeInfo.family} </Typography>
+      <Typography>Children : {attendeInfo.children} </Typography>
+      <Typography>Email : {attendeInfo.emails} </Typography>
+    </Container>
   ) : null;
 };
