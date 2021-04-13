@@ -20,7 +20,7 @@ export const ScanAttendance = ({ title, size }) => {
       try {
         window.api.send("toMain_Attendee", data);
       } catch (e) {
-        console.log(e.message);
+        console.log("error while scanning",e.message);
       }
       reset();
     }
@@ -28,7 +28,6 @@ export const ScanAttendance = ({ title, size }) => {
   const handleError = (err) => {
     console.error(err.message);
   };
-  console.log(title);
   return (
     <Container style={{ width: size || "100%" }}>
       <Card style={{ margin: 8 }}>

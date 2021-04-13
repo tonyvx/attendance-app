@@ -43,9 +43,6 @@ export const RecordAttendance = () => {
   const [count, setCount] = React.useState({});
 
   const handleChange = (event) => {
-    console.log("handleChange : current ", count, " update/add ", {
-      [event.target.name]: event.target.value,
-    });
     const name = event.target.name;
     setCount({
       ...count,

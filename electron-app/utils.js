@@ -172,7 +172,6 @@ function updateRegistrations(registrationInfo) {
           modified: getCurrTimestamp(),
         });
       } else {
-        console.log(rows[pos], registrationInfo, getCurrTimestamp());
         rows[pos] = {
           ...rows[pos],
           ...registrationInfo,
@@ -187,11 +186,7 @@ function updateRegistrations(registrationInfo) {
         app.getPath("home") + "/.attendance-app/registration.csv",
         data.join("\n"),
         function (err) {
-          if (err)
-            return console.log(
-              "updateRegistrations : Error writing file ",
-              err
-            );
+          if (err) return err;
           console.log("updateRegistrations : Successfully updated file");
         }
       );

@@ -16,18 +16,15 @@ export const EventSelector = ({ selectedEvent, setSelectedEvent }) => {
   const [events, setEvents] = useState([]);
 
   const handleChange = (event) => {
-    console.log(events);
     const name = event.target.name;
     setSelectedEvent({
       ...selectedEvent,
       [name]: event.target.value,
     });
-    console.log(selectedEvent);
   };
   useEffect(() => {
     window.api.receive("fromMain_Events", setEvents);
   }, []);
-  console.log(events);
   return (
     <FormControl className={classes.formControl}>
       <InputLabel htmlFor="event-native-simple">Event</InputLabel>
