@@ -1,6 +1,8 @@
 const { app, dialog, Notification } = require("electron");
 const fs = require("fs");
 const csv = require("csv-parser");
+const camelcase = require("camelcase");
+const { compareAsc, format } = require("date-fns");
 
 const path = require("path");
 
@@ -129,7 +131,11 @@ function getEvents(publishEvents) {
   console.log("getEvents");
   const rows = [];
   fs.createReadStream(app.getPath("home") + "/.attendance-app/events.csv")
-    .pipe(csv())
+    .pipe(
+      csv({
+        mapHeaders: ({ header, index }) => camelcase(header),
+      })
+    )
     .on("data", (row) => {
       rows.push(row);
     })
@@ -144,7 +150,11 @@ function updateRegistrations(registrationInfo) {
   const rows = [];
 
   fs.createReadStream(app.getPath("home") + "/.attendance-app/registration.csv")
-    .pipe(csv())
+    .pipe(
+      csv({
+        mapHeaders: ({ header, index }) => camelcase(header),
+      })
+    )
     .on("data", (row) => {
       rows.push(row);
     })
@@ -156,9 +166,18 @@ function updateRegistrations(registrationInfo) {
           row.eventId === registrationInfo.eventId
       );
       if (pos === -1) {
-        rows.push(registrationInfo);
+        rows.push({
+          ...registrationInfo,
+          created: getCurrTimestamp(),
+          modified: getCurrTimestamp(),
+        });
       } else {
-        rows[pos] = registrationInfo;
+        console.log(rows[pos], registrationInfo, getCurrTimestamp());
+        rows[pos] = {
+          ...rows[pos],
+          ...registrationInfo,
+          modified: getCurrTimestamp(),
+        };
       }
       const data = [
         Object.keys(rows[0]).toString(),
@@ -186,3 +205,6 @@ module.exports = {
   sendMessage,
   updateRegistrations,
 };
+function getCurrTimestamp() {
+  return format(new Date(), "yyyy-MM-dd HH:mm:ss");
+}

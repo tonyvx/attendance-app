@@ -98,4 +98,5 @@ ipcMain.on("toMain_ConfirmAttendance", (event, args) => {
     args
   );
   updateRegistrations(args);
+  sendMessage("Thanks for confirming your attendance");
 });

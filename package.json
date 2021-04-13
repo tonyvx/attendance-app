@@ -23,7 +23,9 @@
     "debian": "electron-installer-debian --arch amd64 --config debian.json"
   },
   "dependencies": {
+    "camelcase": "^6.2.0",
     "csv-parser": "^3.0.0",
+    "date-fns": "^2.20.2",
     "electron-context-menu": "^2.5.0",
     "electron-squirrel-startup": "^1.0.0"
   },

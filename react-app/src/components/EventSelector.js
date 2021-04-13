@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
 }));
-export const EventSelector = ({ selectedEvent, setSelectedEvent, width }) => {
+export const EventSelector = ({ selectedEvent, setSelectedEvent }) => {
   const classes = useStyles();
   const [events, setEvents] = useState([]);
 
@@ -27,6 +27,7 @@ export const EventSelector = ({ selectedEvent, setSelectedEvent, width }) => {
   useEffect(() => {
     window.api.receive("fromMain_Events", setEvents);
   }, []);
+  console.log(events);
   return (
     <FormControl className={classes.formControl}>
       <InputLabel htmlFor="event-native-simple">Event</InputLabel>
@@ -41,14 +42,14 @@ export const EventSelector = ({ selectedEvent, setSelectedEvent, width }) => {
       >
         <option aria-label="None" value="" />
         {events.map((e) => (
-          <option value={e["eventId"]}>
-            {e["Date"] +
+          <option value={e.eventId || ""}>
+            {e.date +
               " - " +
-              e["Event"] +
+              e.event +
               " ( " +
-              e["Start Time"] +
+              e.startTime +
               " - " +
-              e["End Time"] +
+              e.endTime +
               " ) "}
           </option>
         ))}

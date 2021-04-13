@@ -70,7 +70,8 @@ export const RecordAttendance = () => {
         <TextField
           id="adultCount"
           label="Adult Count"
-          defaultValue="0"
+          defaultValue={0}
+          value={count.adultCount}
           onChange={handleChange}
           inputProps={{
             name: "adultCount",
@@ -83,7 +84,8 @@ export const RecordAttendance = () => {
         <TextField
           id="childrenCount"
           label="Children Count"
-          defaultValue="0"
+          defaultValue={0}
+          value={count.childrenCount}
           onChange={handleChange}
           inputProps={{
             name: "childrenCount",
@@ -94,14 +96,25 @@ export const RecordAttendance = () => {
       </Grid>
       <Grid item xs={12} className={classes.paper}>
         <Button
+          disabled={!(attendeInfo.id && selectedEvent.eventId)}
           className={classes.button}
-          onClick={() =>
-            window.api.send("toMain_ConfirmAttendance", {
-              attendeeId: attendeInfo.id,
-              eventId: selectedEvent.eventId,
-              ...count,
-            })
-          }
+          onClick={() => {
+            if (attendeInfo.id && selectedEvent.eventId) {
+              window.api.send("toMain_ConfirmAttendance", {
+                attendeeId: attendeInfo.id,
+                eventId: selectedEvent.eventId,
+                ...count,
+              });
+              setAttentdeInfo({});
+              setSelectedEvent({ eventId: "" });
+              setCount({ adultCount: 0, childrenCount: 0 });
+            } else {
+              window.api.send(
+                "toMain",
+                "Please select both attendee and event to confirm"
+              );
+            }
+          }}
         >
           Confirm
         </Button>
