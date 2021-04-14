@@ -17,6 +17,7 @@ contextBridge.exposeInMainWorld("api", {
       "fromMain_AttendeeInfo",
       "fromMain_FooterInfo",
       "fromMain_Events",
+      "fromMain_Attendees"
     ];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`

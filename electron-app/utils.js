@@ -16,19 +16,21 @@ function submenu(mainWindow) {
     },
 
     {
-      label: "Import Events",
+      label: "Import Events as CSV",
       async click() {
         await openCSVFile(mainWindow, "events.csv");
       },
     },
     {
-      label: "Upload Icon",
+      label: "View Registration",
       async click() {
-        await openCSVFile(mainWindow, "icon.jpeg", "jpeg");
+        mainWindow &&
+          mainWindow.webContents.send(
+            "fromMain_Attendees",
+            await getRegistrationInfo()
+          );
       },
     },
-
-    { label: "Verify Attendance" },
     {
       label: "Exit",
       click() {
@@ -145,6 +147,55 @@ function getEvents(publishEvents) {
     });
 }
 
+async function getRegistrationInfo() {
+  console.log("getRegistrationInfo");
+  const registrationsPromise = readCSV(
+    app.getPath("home") + "/.attendance-app/registration.csv"
+  );
+  const attendeesPromise = readCSV(
+    app.getPath("home") + "/.attendance-app/attendees.csv"
+  );
+  const eventsPromise = readCSV(
+    app.getPath("home") + "/.attendance-app/events.csv"
+  );
+
+  const data = await Promise.all([
+    registrationsPromise,
+    attendeesPromise,
+    eventsPromise,
+  ]);
+
+  const registrations = data[0];
+  const attendees = data[1];
+  const events = data[2];
+
+  const getAttendee = (id) => attendees.find((a) => a.familyId === id);
+  const getEvent = (id) => events.find((e) => e.id === id);
+  return registrations.map((registration, index) => {
+    return {
+      id: index,
+      attendee: getAttendee(registration.attendeeId).firstName,
+      event: Object.values(getEvent(registration.eventId)).join(" - "),
+      ...registration,
+    };
+  });
+}
+
+function readCSV(file) {
+  const rows = [];
+  var fd = fs.createReadStream(file).pipe(
+    csv({
+      mapHeaders: ({ header, index }) => camelcase(header),
+    })
+  );
+  return new Promise(function (resolve, reject) {
+    fd.on("data", (row) => {
+      rows.push(row);
+    });
+    fd.on("error", reject);
+    fd.on("end", () => resolve(rows));
+  });
+}
 function updateRegistrations(registrationInfo) {
   console.log("updateRegistrations", registrationInfo);
   const rows = [];

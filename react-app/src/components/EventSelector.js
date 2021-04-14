@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, Select } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -11,9 +11,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
 }));
-export const EventSelector = ({ selectedEvent, setSelectedEvent }) => {
+export const EventSelector = ({ selectedEvent, setSelectedEvent, events }) => {
   const classes = useStyles();
-  const [events, setEvents] = useState([]);
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -22,9 +21,7 @@ export const EventSelector = ({ selectedEvent, setSelectedEvent }) => {
       [name]: event.target.value,
     });
   };
-  useEffect(() => {
-    window.api.receive("fromMain_Events", setEvents);
-  }, []);
+
   return (
     <FormControl className={classes.formControl}>
       <InputLabel htmlFor="event-native-simple">Event</InputLabel>
@@ -39,7 +36,7 @@ export const EventSelector = ({ selectedEvent, setSelectedEvent }) => {
       >
         <option aria-label="None" value="" />
         {events.map((e) => (
-          <option value={e.eventId || ""}>
+          <option value={e.id || ""}>
             {e.date +
               " - " +
               e.event +

@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const RecordAttendance = () => {
+export const RecordAttendance = ({ events }) => {
   const classes = useStyles();
 
   const [attendeInfo, setAttentdeInfo] = useState({});
@@ -61,6 +61,7 @@ export const RecordAttendance = () => {
         <EventSelector
           selectedEvent={selectedEvent}
           setSelectedEvent={setSelectedEvent}
+          events={events}
         />
       </Grid>
       <Grid item xs={6} className={classes.rightText}>
