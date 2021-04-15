@@ -170,12 +170,19 @@ async function getRegistrationInfo() {
   const events = data[2];
 
   const getAttendee = (id) => attendees.find((a) => a.familyId === id);
-  const getEvent = (id) => events.find((e) => e.id === id);
+  const getEvent = (id) =>
+    events
+      .filter((e) => e.id === id)
+      .map(
+        (event) => event.date + " - (" + event.startTime + ") - " + event.event
+      )
+      .find((e) => !!e);
+ 
   return registrations.map((registration, index) => {
     return {
       id: index,
       attendee: getAttendee(registration.attendeeId).firstName,
-      event: Object.values(getEvent(registration.eventId)).join(" - "),
+      event: getEvent(registration),
       ...registration,
     };
   });
