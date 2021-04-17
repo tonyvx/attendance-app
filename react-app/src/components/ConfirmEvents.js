@@ -45,7 +45,7 @@ export const ConfirmEvents = ({ data, setPopper }) => {
           <Container style={{ height: "100%", width: "100%" }}>
             {Array.isArray(data) && data.length > 0 && (
               <DataGrid
-                pageSize={5}
+                pageSize={4}
                 checkboxSelection
                 rows={data}
                 components={{

@@ -4,7 +4,7 @@ const contextMenu = require("electron-context-menu");
 const {
   submenu,
   findAttendee,
-  getEvents,
+  readAndPublishCSV,
   sendMessage,
   updateRegistrations,
 } = require("./electron-app/utils");
@@ -44,10 +44,8 @@ function createWindow() {
         (footerText += type + " : " + process.versions[type] + " ");
     }
     mainWindow.webContents.send("fromMain_FooterInfo", footerText);
-    getEvents(
-      (events) =>
-        mainWindow && mainWindow.webContents.send("fromMain_Events", events)
-    );
+    //On App load
+    readAndPublishCSV("events.csv", mainWindow, "fromMain_Events");
   });
 
   mainWindow.on("closed", function () {
@@ -83,14 +81,6 @@ ipcMain.on("toMain_Attendee", (event, args) => {
   });
 });
 
-ipcMain.on("toMain_Events", (event, args) => {
-  console.log("channel: toMain_Events (getEvents) :", args);
-
-  getEvents(
-    (events) =>
-      mainWindow && mainWindow.webContents.send("fromMain_Events", events)
-  );
-});
 
 ipcMain.on("toMain_ConfirmAttendance", (event, args) => {
   console.log(

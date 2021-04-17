@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "watch": "webpack --watch",
+    "watch": "webpack --watch --mode=development",
     "react": "webpack --mode=production",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -1,6 +1,13 @@
 import { Button, Grid, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import {
+  AppContext,
+  register,
+  registrationInfoComplete,
+  sendMessage,
+  setCount,
+} from "../AppContext";
 import { EventSelector } from "./EventSelector";
 import { ShowAttendeeInfo } from "./ShowAttendeeInfo";
 
@@ -34,41 +41,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const RecordAttendance = ({ events }) => {
+export const RecordAttendance = () => {
   const classes = useStyles();
+  const { context, dispatch } = React.useContext(AppContext);
 
-  const [attendeInfo, setAttentdeInfo] = useState({});
-
-  const [selectedEvent, setSelectedEvent] = React.useState({});
-  const [count, setCount] = React.useState({});
+  const { count, attendeeInfo, selectedEvent } = context;
 
   const handleChange = (event) => {
     const name = event.target.name;
-    setCount({
+    setCount(dispatch, {
       ...count,
       [name]: event.target.value,
     });
   };
 
-  useEffect(() => window.api.receive("fromMain_AttendeeInfo", setAttentdeInfo));
   return (
     <Grid container direction="row" justify="center" alignItems="center">
       <Grid item xs={12} className={classes.paper}>
-        <ShowAttendeeInfo attendeInfo={attendeInfo} />
+        <ShowAttendeeInfo />
       </Grid>
 
       <Grid item xs={12} className={classes.paper}>
-        <EventSelector
-          selectedEvent={selectedEvent}
-          setSelectedEvent={setSelectedEvent}
-          events={events}
-        />
+        <EventSelector />
       </Grid>
       <Grid item xs={6} className={classes.rightText}>
         <TextField
           id="adultCount"
           label="Adult Count"
-          defaultValue={0}
           value={count.adultCount}
           onChange={handleChange}
           inputProps={{
@@ -82,7 +81,6 @@ export const RecordAttendance = ({ events }) => {
         <TextField
           id="childrenCount"
           label="Children Count"
-          defaultValue={0}
           value={count.childrenCount}
           onChange={handleChange}
           inputProps={{
@@ -94,23 +92,15 @@ export const RecordAttendance = ({ events }) => {
       </Grid>
       <Grid item xs={12} className={classes.paper}>
         <Button
-          disabled={!(attendeInfo.id && selectedEvent.eventId)}
+          disabled={
+            !registrationInfoComplete(attendeeInfo, selectedEvent, count)
+          }
           className={classes.button}
           onClick={() => {
-            if (attendeInfo.id && selectedEvent.eventId) {
-              window.api.send("toMain_ConfirmAttendance", {
-                attendeeId: attendeInfo.id,
-                eventId: selectedEvent.eventId,
-                ...count,
-              });
-              setAttentdeInfo({});
-              setSelectedEvent({ eventId: "" });
-              setCount({ adultCount: 0, childrenCount: 0 });
+            if (registrationInfoComplete(attendeeInfo, selectedEvent, count)) {
+              register(dispatch, attendeeInfo, selectedEvent, count);
             } else {
-              window.api.send(
-                "toMain",
-                "Please select both attendee and event to confirm"
-              );
+              sendMessage("Please select both attendee and event to confirm");
             }
           }}
         >

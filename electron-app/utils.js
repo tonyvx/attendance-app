@@ -82,12 +82,11 @@ async function openCSVFile(mainWindow1, fileName, type = "csv") {
 
         sendMessage(fileName + " updated.");
 
-        if (fileName === "events.csv")
-          getEvents(
-            (events) =>
-              mainWindow1 &&
-              mainWindow1.webContents.send("fromMain_Events", events)
-          );
+        readAndPublishCSV(
+          fileName,
+          mainWindow1,
+          fileName === "events.csv" ? "fromMain_Events" : "fromMain_Attendees"
+        );
       } catch (e) {
         console.log("openCSVFile : Failed to save the file !", e.message);
         sendMessage(
@@ -129,22 +128,22 @@ function findAttendee(data1, notifyAttendee) {
     });
 }
 
-function getEvents(publishEvents) {
-  console.log("getEvents");
-  const rows = [];
-  fs.createReadStream(app.getPath("home") + "/.attendance-app/events.csv")
-    .pipe(
-      csv({
-        mapHeaders: ({ header, index }) => camelcase(header),
+async function readAndPublishCSV(fileName, window, channel) {
+  console.log("readAndPublishCSV");
+
+  const rows = await readCSV(
+    app.getPath("home") + "/.attendance-app/" + fileName
+  );
+
+  console.log("readAndPublishCSV : CSV file successfully processed");
+
+  window &&
+    window.webContents.send(
+      channel,
+      rows.map((row, index) => {
+        return !row.id ? { ...row, id: index } : row;
       })
-    )
-    .on("data", (row) => {
-      rows.push(row);
-    })
-    .on("end", () => {
-      console.log("getEvents : CSV file successfully processed");
-      publishEvents(rows);
-    });
+    );
 }
 
 async function getRegistrationInfo() {
@@ -252,7 +251,7 @@ function updateRegistrations(registrationInfo) {
 module.exports = {
   submenu,
   findAttendee,
-  getEvents,
+  readAndPublishCSV,
   sendMessage,
   updateRegistrations,
 };

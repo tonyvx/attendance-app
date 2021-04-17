@@ -1,5 +1,4 @@
 const { ipcRenderer, contextBridge } = require("electron");
-const { sendMessage } = require("./utils");
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object

@@ -1,6 +1,7 @@
-import { Container, Typography, Grid, Divider } from "@material-ui/core";
+import { Container, Divider, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
+import { AppContext } from "../AppContext";
 
 const useStyles = makeStyles((theme) => ({
   left: {
@@ -15,9 +16,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const ShowAttendeeInfo = ({ attendeInfo }) => {
+export const ShowAttendeeInfo = () => {
+  const { context } = React.useContext(AppContext);
+
+  const { attendeeInfo } = context;
   const classes = useStyles();
-  return attendeInfo ? (
+  return attendeeInfo ? (
     <Container style={{ width: 400, padding: 0 }}>
       <Grid container direction="row" justify="center" alignItems="center">
         <Grid item xs={4} className={classes.left}>
@@ -25,7 +29,7 @@ export const ShowAttendeeInfo = ({ attendeInfo }) => {
         </Grid>
 
         <Grid item xs={8} className={classes.right}>
-          <Typography align={"left"}>{attendeInfo.family}</Typography>
+          <Typography align={"left"}>{attendeeInfo.family}</Typography>
         </Grid>
         <Grid item xs={12} className={classes.center}>
           <Divider></Divider>
@@ -34,7 +38,7 @@ export const ShowAttendeeInfo = ({ attendeInfo }) => {
           <Typography>Children</Typography>
         </Grid>
         <Grid item xs={8} className={classes.right}>
-          <Typography align={"left"}>{attendeInfo.children}</Typography>
+          <Typography align={"left"}>{attendeeInfo.children}</Typography>
         </Grid>
         <Grid item xs={12} className={classes.center}>
           <Divider></Divider>
@@ -43,7 +47,7 @@ export const ShowAttendeeInfo = ({ attendeInfo }) => {
           <Typography>Email</Typography>
         </Grid>
         <Grid item xs={8} className={classes.right}>
-          <Typography align={"left"}>{attendeInfo.emails}</Typography>
+          <Typography align={"left"}>{attendeeInfo.emails}</Typography>
         </Grid>
         <Grid item xs={12} className={classes.center}>
           <Divider></Divider>

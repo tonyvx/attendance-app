@@ -1,12 +1,13 @@
 import { Card, Container, Typography } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import QrReader from "react-qr-reader";
 import { useStopwatch } from "react-timer-hook";
+import { AppContext, setScanData } from "../AppContext";
 
-export const ScanAttendance = ({ title, size }) => {
-  const [state, setState] = useState({
-    result: "No result",
-  });
+export const ScanAttendance = ({ size }) => {
+  const { context, dispatch } = useContext(AppContext);
+
+  const { scanData } = context;
 
   const { seconds, minutes, hours, reset } = useStopwatch({
     autoStart: true,
@@ -14,14 +15,7 @@ export const ScanAttendance = ({ title, size }) => {
 
   const handleScan = (data) => {
     if (data) {
-      setState({
-        result: data,
-      });
-      try {
-        window.api.send("toMain_Attendee", data);
-      } catch (e) {
-        console.log("error while scanning",e.message);
-      }
+      setScanData(dispatch, data);
       reset();
     }
   };
@@ -35,8 +29,8 @@ export const ScanAttendance = ({ title, size }) => {
       </Card>
       <Card>
         <Typography style={{ textAlign: "center", width: 400 }}>
-          {state.result} Scanned at : <span>{hours}</span>:
-          <span>{minutes}</span>:<span>{seconds} </span>
+          {scanData} Scanned at : <span>{hours}</span>:<span>{minutes}</span>:
+          <span>{seconds} </span>
           secs
         </Typography>
       </Card>
