@@ -6,7 +6,7 @@ const {
   findAttendee,
   readAndPublishCSV,
   sendMessage,
-  updateRegistrations,
+  updateRegistrations,openCSVFile
 } = require("./electron-app/utils");
 
 contextMenu({});
@@ -45,7 +45,7 @@ function createWindow() {
     }
     mainWindow.webContents.send("fromMain_FooterInfo", footerText);
     //On App load
-    readAndPublishCSV("events.csv", mainWindow, "fromMain_Events");
+    readAndPublishCSV("events", mainWindow, "fromMain_Events");
   });
 
   mainWindow.on("closed", function () {
@@ -67,26 +67,31 @@ app.on("activate", function () {
   }
 });
 
-ipcMain.on("toMain", (event, args) => {
-  console.log("channel: toMain (sendMessage) :", args);
-  sendMessage(args);
+ipcMain.on("toMain", (event, message) => {
+  console.log("channel: toMain (sendMessage) :", message);
+  sendMessage(message);
 });
 
-ipcMain.on("toMain_Attendee", (event, args) => {
-  console.log("channel: toMain_Attendee (findAttendee) :", args);
-  findAttendee(args, (attendee) => {
+ipcMain.on("toMain_Attendee", (event, scanData) => {
+  console.log("channel: toMain_Attendee (findAttendee) :", scanData);
+  findAttendee(scanData, (attendee) => {
     mainWindow &&
       mainWindow.webContents.send("fromMain_AttendeeInfo", attendee);
-    sendMessage(args);
+    sendMessage(scanData);
   });
 });
 
+ipcMain.on("toMain_Upload", (event, fileName) => {
+  console.log("channel: toMain_Upload (openCVS) :", fileName);
+  openCSVFile(mainWindow, fileName)
+});
 
-ipcMain.on("toMain_ConfirmAttendance", (event, args) => {
+
+ipcMain.on("toMain_ConfirmAttendance", (event, registrationInfo) => {
   console.log(
     "channel: toMain_ConfirmAttendance (updateRegistrations) :",
-    args
+    registrationInfo
   );
-  updateRegistrations(args);
+  updateRegistrations(registrationInfo);
   sendMessage("Thanks for confirming your attendance");
 });

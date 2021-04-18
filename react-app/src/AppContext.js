@@ -11,6 +11,7 @@ export const initialState = {
   selectedEvent: {},
   count: { adultCount: 0, childrenCount: 0 },
   scanData: "No result",
+  registrationInfo: {},
 };
 
 export const reducer = (context, action) => {
@@ -43,6 +44,12 @@ export const reducer = (context, action) => {
       return {
         ...context,
         attendeeInfo: action.attendeeInfo,
+      };
+
+    case "REGISTRATION_INFO":
+      return {
+        ...context,
+        registrationInfo: action.registrationInfo,
       };
 
     case "COUNT":
@@ -87,6 +94,9 @@ export const setAttentdees = (dispatch, data) => {
 export const setAttentdeeInfo = (dispatch, attendeeInfo) => {
   dispatch({ type: "ATTENDEE", attendeeInfo });
 };
+export const setRegistrationInfo = (dispatch, registrationInfo) => {
+  dispatch({ type: "REGISTRATION_INFO", registrationInfo });
+};
 
 export const setCount = (dispatch, count) => {
   dispatch({ type: "COUNT", count });
@@ -125,6 +135,10 @@ export const sendMessage = (message) => {
 
 export const resetScan = (dispatch) => {
   dispatch({ type: "RESET_SCAN" });
+};
+
+export const uploadFile = (fileName) => {
+  window.api.send("toMain_Upload", fileName);
 };
 
 export const setScanData = (dispatch, scanData) => {

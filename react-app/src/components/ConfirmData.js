@@ -1,4 +1,11 @@
-import { Button, Container, Grid, Paper, Typography } from "@material-ui/core";
+import {
+  Button,
+  Container,
+  Grid,
+  Input,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   DataGrid,
@@ -6,6 +13,7 @@ import {
   GridToolbarExport,
 } from "@material-ui/data-grid";
 import React from "react";
+import { uploadFile } from "../AppContext";
 
 export const useStyles = makeStyles((theme) => ({
   headerAndFooter: {
@@ -27,7 +35,7 @@ function CustomToolbar() {
   );
 }
 
-export const ConfirmEvents = ({ data, setPopper }) => {
+export const ConfirmData = ({ data, fileName, setPopper, upload }) => {
   const classes = useStyles();
   return (
     <Paper style={{ height: "90vh", width: "90vw" }}>
@@ -39,7 +47,7 @@ export const ConfirmEvents = ({ data, setPopper }) => {
         alignItems="center"
       >
         <Grid item xs={12} className={classes.headerAndFooter}>
-          <Typography> Events</Typography>
+          <Typography>{fileName}</Typography>
         </Grid>
         <Grid item xs={12} className={classes.panels}>
           <Container style={{ height: "100%", width: "100%" }}>
@@ -69,8 +77,12 @@ export const ConfirmEvents = ({ data, setPopper }) => {
               setPopper({ events: false, atttendees: false });
             }}
           >
-            Confirm Events
+            CLOSE
           </Button>
+
+          {upload && (
+            <Button onClick={() => uploadFile(fileName)}>Upload</Button>
+          )}
         </Grid>
       </Grid>
     </Paper>

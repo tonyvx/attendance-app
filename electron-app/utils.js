@@ -9,16 +9,16 @@ const path = require("path");
 function submenu(mainWindow) {
   return [
     {
-      label: "Import Attendees as CSV",
+      label: "View Registered Parishioners",
       async click() {
-        await openCSVFile(mainWindow, "attendees.csv");
+        readAndPublishCSV("attendees", mainWindow, "fromMain_Attendees");
       },
     },
 
     {
-      label: "Import Events as CSV",
+      label: "View Events",
       async click() {
-        await openCSVFile(mainWindow, "events.csv");
+        readAndPublishCSV("events", mainWindow, "fromMain_Events");
       },
     },
     {
@@ -26,7 +26,7 @@ function submenu(mainWindow) {
       async click() {
         mainWindow &&
           mainWindow.webContents.send(
-            "fromMain_Attendees",
+            "fromMain_RegistrationInfo",
             await getRegistrationInfo()
           );
       },
@@ -46,7 +46,7 @@ async function openCSVFile(mainWindow1, fileName, type = "csv") {
   var file = await dialog.showOpenDialog(
     (mainWindow1,
     {
-      title: "select a file",
+      title: "Updating" + fileName,
       properties: ["openFile"],
       filters: [{ name: type, extensions: [type] }],
     })
@@ -75,7 +75,7 @@ async function openCSVFile(mainWindow1, fileName, type = "csv") {
         );
 
         fs.writeFileSync(
-          app.getPath("home") + "/.attendance-app/" + fileName,
+          app.getPath("home") + "/.attendance-app/" + fileName + ".csv",
           data,
           type === "csv" ? "utf-8" : "binary"
         );
@@ -85,7 +85,11 @@ async function openCSVFile(mainWindow1, fileName, type = "csv") {
         readAndPublishCSV(
           fileName,
           mainWindow1,
-          fileName === "events.csv" ? "fromMain_Events" : "fromMain_Attendees"
+          fileName === "events"
+            ? "fromMain_Events"
+            : fileName === "attendees"
+            ? "fromMain_Attendees"
+            : "Something went wrong"
         );
       } catch (e) {
         console.log("openCSVFile : Failed to save the file !", e.message);
@@ -132,7 +136,7 @@ async function readAndPublishCSV(fileName, window, channel) {
   console.log("readAndPublishCSV");
 
   const rows = await readCSV(
-    app.getPath("home") + "/.attendance-app/" + fileName
+    app.getPath("home") + "/.attendance-app/" + fileName + ".csv"
   );
 
   console.log("readAndPublishCSV : CSV file successfully processed");
@@ -254,6 +258,7 @@ module.exports = {
   readAndPublishCSV,
   sendMessage,
   updateRegistrations,
+  openCSVFile,
 };
 function getCurrTimestamp() {
   return format(new Date(), "yyyy-MM-dd HH:mm:ss");

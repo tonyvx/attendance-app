@@ -4,8 +4,14 @@ const { ipcRenderer, contextBridge } = require("electron");
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => {
-    // whitelist channels 
-    let validChannels = ["toMain", "toMain_Events", "toMain_Attendee", "toMain_ConfirmAttendance"];
+    // whitelist channels
+    let validChannels = [
+      "toMain",
+      "toMain_Events",
+      "toMain_Attendee",
+      "toMain_ConfirmAttendance",
+      "toMain_Upload",
+    ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
@@ -16,7 +22,8 @@ contextBridge.exposeInMainWorld("api", {
       "fromMain_AttendeeInfo",
       "fromMain_FooterInfo",
       "fromMain_Events",
-      "fromMain_Attendees"
+      "fromMain_Attendees",
+      "fromMain_RegistrationInfo"
     ];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
