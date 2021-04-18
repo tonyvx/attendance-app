@@ -1,17 +1,23 @@
-import { Grid, Paper, Popper, Typography } from "@material-ui/core";
+import {
+  Drawer,
+  Grid,
+  Paper,
+  SwipeableDrawer,
+  Typography,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useRef, useState } from "react";
+import {
+  AppContext,
+  setAttentdeeInfo,
+  setAttentdees,
+  setEvents,
+  setFooterInfo,
+  setRegistrationInfo,
+} from "./AppContext";
 import { ConfirmData } from "./components/ConfirmData";
 import { RecordAttendance } from "./components/RecordAttendance";
 import { ScanAttendance } from "./components/ScanAttendance";
-import {
-  AppContext,
-  setFooterInfo,
-  setEvents,
-  setAttentdees,
-  setAttentdeeInfo,
-  setRegistrationInfo,
-} from "./AppContext";
 
 export const useStyles = makeStyles((theme) => ({
   headerAndFooter: {
@@ -34,7 +40,7 @@ export const MainApp = () => {
     attendees: false,
     registration: true,
   });
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [toggleDrawer, setToggleDrawer] = useState(false);
 
   const _ref = useRef();
 
@@ -48,7 +54,8 @@ export const MainApp = () => {
     window.api.receive("fromMain_Events", (data) => {
       setEvents(dispatch, data);
       setPopper({ events: true, attendees: false, registrationInfo: false });
-      setAnchorEl(_ref.current || null);
+      toggleDrawer && setTimeout(setToggleDrawer(false), 50);
+      setToggleDrawer(true);
       id = "simple-popover";
     });
   }, []);
@@ -57,7 +64,8 @@ export const MainApp = () => {
     window.api.receive("fromMain_Attendees", (data) => {
       setAttentdees(dispatch, data);
       setPopper({ events: false, attendees: true, registrationInfo: false });
-      setAnchorEl(_ref.current || null);
+      toggleDrawer && setTimeout(setToggleDrawer(false), 50);
+      setToggleDrawer(true);
       id = "simple-popover";
     });
   }, []);
@@ -66,7 +74,8 @@ export const MainApp = () => {
     window.api.receive("fromMain_RegistrationInfo", (data) => {
       setRegistrationInfo(dispatch, data);
       setPopper({ events: false, attendees: false, registrationInfo: true });
-      setAnchorEl(_ref.current || null);
+      toggleDrawer && setTimeout(setToggleDrawer(false), 50);
+      setToggleDrawer(true);
       id = "simple-popover";
     });
   }, []);
@@ -95,10 +104,17 @@ export const MainApp = () => {
           <Typography>{footerInfo}</Typography>
         </Grid>
       </Grid>
-      <Popper
+      <SwipeableDrawer
         id={id}
-        open={popper.attendees || popper.events || popper.registrationInfo}
-        anchorEl={anchorEl}
+        anchor="top"
+        open={
+          (!!popper.attendees ||
+            !!popper.events ||
+            !!popper.registrationInfo) &&
+          toggleDrawer
+        }
+        onClose={() => setToggleDrawer(false)}
+        onOpen={() => setToggleDrawer(true)}
         placement={"bottom"}
         style={{ zIndex: 2 }}
       >
@@ -116,7 +132,7 @@ export const MainApp = () => {
             upload: popper.attendees || popper.events,
           }}
         />
-      </Popper>
+      </SwipeableDrawer>
     </Paper>
   );
 };
