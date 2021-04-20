@@ -1,19 +1,12 @@
-import {
-  Button,
-  Container,
-  Grid,
-  Input,
-  Paper,
-  Typography,
-} from "@material-ui/core";
+import { Button, Container, Grid, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   DataGrid,
   GridToolbarContainer,
   GridToolbarExport,
 } from "@material-ui/data-grid";
-import React from "react";
-import { uploadFile } from "../AppContext";
+import React, { useEffect, useState } from "react";
+import { AppContext, setPopper, uploadFile, popperData } from "../AppContext";
 
 export const useStyles = makeStyles((theme) => ({
   headerAndFooter: {
@@ -35,10 +28,19 @@ function CustomToolbar() {
   );
 }
 
-export const ConfirmData = ({ data, fileName, setPopper, upload }) => {
+export const ConfirmData = () => {
   const classes = useStyles();
+  const { context, dispatch } = React.useContext(AppContext);
+  const [page, setPage] = useState(1);
+
+  const { data, title, showUploadButton } = popperData(context);
+
+  useEffect(() => {
+    console.log("setting page number to 1");
+    setPage(1);
+  }, [data]);
   return (
-    <Paper style={{ height: "90vh", width: "90vw" }}>
+    <Paper>
       <Grid
         style={{ height: "100%", width: "100%" }}
         container
@@ -47,12 +49,13 @@ export const ConfirmData = ({ data, fileName, setPopper, upload }) => {
         alignItems="center"
       >
         <Grid item xs={12} className={classes.headerAndFooter}>
-          <Typography>{fileName}</Typography>
+          <Typography>{title ? title.toUpperCase() : null}</Typography>
         </Grid>
         <Grid item xs={12} className={classes.panels}>
           <Container style={{ height: "100%", width: "100%" }}>
             {Array.isArray(data) && data.length > 0 && (
               <DataGrid
+                page={page}
                 pageSize={4}
                 checkboxSelection
                 rows={data}
@@ -60,11 +63,10 @@ export const ConfirmData = ({ data, fileName, setPopper, upload }) => {
                   Toolbar: CustomToolbar,
                 }}
                 columns={Object.keys(data[0]).map((key) => {
-                  console.log(key);
                   return {
                     field: key,
                     headerName: key.toUpperCase(),
-                    width: 260,
+                    width: 200,
                   };
                 })}
               />
@@ -72,16 +74,10 @@ export const ConfirmData = ({ data, fileName, setPopper, upload }) => {
           </Container>
         </Grid>
         <Grid item xs={12} className={classes.headerAndFooter}>
-          <Button
-            onClick={() => {
-              setPopper({ events: false, atttendees: false });
-            }}
-          >
-            CLOSE
-          </Button>
+          <Button onClick={() => setPopper(dispatch)}>CLOSE</Button>
 
-          {upload && (
-            <Button onClick={() => uploadFile(fileName)}>Upload</Button>
+          {showUploadButton && (
+            <Button onClick={() => uploadFile(title)}>Upload</Button>
           )}
         </Grid>
       </Grid>

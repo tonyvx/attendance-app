@@ -12,6 +12,11 @@ export const initialState = {
   count: { adultCount: 0, childrenCount: 0 },
   scanData: "No result",
   registrationInfo: {},
+  popper: {
+    events: false,
+    attendees: false,
+    registration: false,
+  },
 };
 
 export const reducer = (context, action) => {
@@ -63,7 +68,16 @@ export const reducer = (context, action) => {
         ...context,
         scanData: action.scanData,
       };
-
+    case "POPPER":
+      return {
+        ...context,
+        popper: {
+          events: false,
+          attendees: false,
+          registration: false,
+          ...action.update,
+        },
+      };
     case "RESET_SCAN":
       return {
         ...context,
@@ -81,6 +95,7 @@ export const setFooterInfo = (dispatch, footerInfo) => {
 
 export const setEvents = (dispatch, data) => {
   dispatch({ type: "EVENTS", data });
+  setPopper(dispatch, { events: true });
 };
 
 export const setSelectedEvent = (dispatch, selectedEvent) => {
@@ -89,6 +104,7 @@ export const setSelectedEvent = (dispatch, selectedEvent) => {
 
 export const setAttentdees = (dispatch, data) => {
   dispatch({ type: "ATTENDEES", data });
+  setPopper(dispatch, { attendees: true });
 };
 
 export const setAttentdeeInfo = (dispatch, attendeeInfo) => {
@@ -96,10 +112,30 @@ export const setAttentdeeInfo = (dispatch, attendeeInfo) => {
 };
 export const setRegistrationInfo = (dispatch, registrationInfo) => {
   dispatch({ type: "REGISTRATION_INFO", registrationInfo });
+  setPopper(dispatch, { registrationInfo: true });
 };
 
 export const setCount = (dispatch, count) => {
   dispatch({ type: "COUNT", count });
+};
+
+export const setPopper = (dispatch, update) => {
+  dispatch({ type: "POPPER", update });
+};
+
+export const popperData = (context) => {
+  const { popper, attendees, events, registrationInfo } = context;
+  return {
+    data:
+      (popper.attendees && attendees) ||
+      (popper.events && events) ||
+      (popper.registrationInfo && registrationInfo),
+    title:
+      (popper.attendees && "Parishioners") ||
+      (popper.events && "Masses") ||
+      (popper.registrationInfo && "Registration Info"),
+    showUploadButton: popper.attendees || popper.events,
+  };
 };
 
 export const registrationInfoComplete = (

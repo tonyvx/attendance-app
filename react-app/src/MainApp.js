@@ -1,14 +1,9 @@
-import {
-  Drawer,
-  Grid,
-  Paper,
-  SwipeableDrawer,
-  Typography,
-} from "@material-ui/core";
+import { Grid, Paper, SwipeableDrawer, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useRef, useState } from "react";
 import {
   AppContext,
+  popperData,
   setAttentdeeInfo,
   setAttentdees,
   setEvents,
@@ -33,13 +28,8 @@ export const MainApp = () => {
   const classes = useStyles();
   const { context, dispatch } = React.useContext(AppContext);
 
-  const { footerInfo, events, attendees, registrationInfo } = context;
+  const { footerInfo } = context;
 
-  const [popper, setPopper] = useState({
-    events: false,
-    attendees: false,
-    registration: true,
-  });
   const [toggleDrawer, setToggleDrawer] = useState(false);
 
   const _ref = useRef();
@@ -53,30 +43,21 @@ export const MainApp = () => {
   useEffect(() => {
     window.api.receive("fromMain_Events", (data) => {
       setEvents(dispatch, data);
-      setPopper({ events: true, attendees: false, registrationInfo: false });
-      toggleDrawer && setTimeout(setToggleDrawer(false), 50);
       setToggleDrawer(true);
-      id = "simple-popover";
     });
   }, []);
 
   useEffect(() => {
     window.api.receive("fromMain_Attendees", (data) => {
       setAttentdees(dispatch, data);
-      setPopper({ events: false, attendees: true, registrationInfo: false });
-      toggleDrawer && setTimeout(setToggleDrawer(false), 50);
       setToggleDrawer(true);
-      id = "simple-popover";
     });
   }, []);
 
   useEffect(() => {
     window.api.receive("fromMain_RegistrationInfo", (data) => {
       setRegistrationInfo(dispatch, data);
-      setPopper({ events: false, attendees: false, registrationInfo: true });
-      toggleDrawer && setTimeout(setToggleDrawer(false), 50);
       setToggleDrawer(true);
-      id = "simple-popover";
     });
   }, []);
 
@@ -85,8 +66,6 @@ export const MainApp = () => {
       setAttentdeeInfo(dispatch, attendeeInfo1)
     )
   );
-
-  let id;
 
   return (
     <Paper ref={_ref} style={{ height: "100vh", width: "100%" }}>
@@ -105,33 +84,13 @@ export const MainApp = () => {
         </Grid>
       </Grid>
       <SwipeableDrawer
-        id={id}
+        style={{ height: "90vh", width: "90vw" }}
         anchor="top"
-        open={
-          (!!popper.attendees ||
-            !!popper.events ||
-            !!popper.registrationInfo) &&
-          toggleDrawer
-        }
+        open={!!popperData(context).data && toggleDrawer}
         onClose={() => setToggleDrawer(false)}
         onOpen={() => setToggleDrawer(true)}
-        placement={"bottom"}
-        style={{ zIndex: 2 }}
       >
-        <ConfirmData
-          {...{
-            data:
-              (popper.attendees && attendees) ||
-              (popper.events && events) ||
-              (popper.registrationInfo && registrationInfo),
-            fileName:
-              (popper.attendees && "Parishioners") ||
-              (popper.events && "Masses") ||
-              (popper.registrationInfo && "Registration Info"),
-            setPopper,
-            upload: popper.attendees || popper.events,
-          }}
-        />
+        <ConfirmData />
       </SwipeableDrawer>
     </Paper>
   );
