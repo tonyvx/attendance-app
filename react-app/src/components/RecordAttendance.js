@@ -7,6 +7,7 @@ import {
   registrationInfoComplete,
   sendMessage,
   setCount,
+  setView,
 } from "../AppContext";
 import { EventSelector } from "./EventSelector";
 import { ShowAttendeeInfo } from "./ShowAttendeeInfo";
@@ -92,6 +93,7 @@ export const RecordAttendance = () => {
       </Grid>
       <Grid item xs={12} className={classes.paper}>
         <Button
+          variant="outlined"
           disabled={
             !registrationInfoComplete(attendeeInfo, selectedEvent, count)
           }
@@ -105,6 +107,9 @@ export const RecordAttendance = () => {
           }}
         >
           Confirm
+        </Button>
+        <Button variant="outlined" onClick={() => setView(dispatch)}>
+          Cancel
         </Button>
       </Grid>
     </Grid>

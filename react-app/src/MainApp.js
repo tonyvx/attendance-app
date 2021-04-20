@@ -1,4 +1,6 @@
-import { Grid, Paper, SwipeableDrawer, Typography } from "@material-ui/core";
+import {
+  SwipeableDrawer,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -11,8 +13,9 @@ import {
   setRegistrationInfo,
 } from "./AppContext";
 import { ConfirmData } from "./components/ConfirmData";
-import { RecordAttendance } from "./components/RecordAttendance";
-import { ScanAttendance } from "./components/ScanAttendance";
+import { Scanner } from "./components/Scanner";
+import { VisitorDetailsDialog } from "./components/VisitorDetailsDialog";
+import { VisitorParishionerDialog } from "./components/VisitorParishionerDialog";
 
 export const useStyles = makeStyles((theme) => ({
   headerAndFooter: {
@@ -22,14 +25,15 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     height: "90vh",
   },
+  dialog: {
+    textAlign: "center",
+  },
 }));
 
 export const MainApp = () => {
-  const classes = useStyles();
   const { context, dispatch } = React.useContext(AppContext);
 
-  const { footerInfo } = context;
-
+  const [visitorDetails, setVisitorDetails] = useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
 
   const _ref = useRef();
@@ -68,21 +72,8 @@ export const MainApp = () => {
   );
 
   return (
-    <Paper ref={_ref} style={{ height: "100vh", width: "100%" }}>
-      <Grid container direction="row" justify="center" alignItems="center">
-        <Grid item xs={12} className={classes.headerAndFooter}>
-          <Typography>{"smcboston.org"}</Typography>
-        </Grid>
-        <Grid item xs={6} className={classes.panels}>
-          <RecordAttendance />
-        </Grid>
-        <Grid item xs={6} className={classes.panels}>
-          <ScanAttendance />
-        </Grid>
-        <Grid item xs={12} className={classes.headerAndFooter}>
-          <Typography>{footerInfo}</Typography>
-        </Grid>
-      </Grid>
+    <>
+      <Scanner ref={_ref} />
       <SwipeableDrawer
         style={{ height: "90vh", width: "90vw" }}
         anchor="top"
@@ -92,6 +83,15 @@ export const MainApp = () => {
       >
         <ConfirmData />
       </SwipeableDrawer>
-    </Paper>
+      <VisitorParishionerDialog setVisitorDetails={setVisitorDetails} />
+      {visitorDetails && (
+        <VisitorDetailsDialog
+          setVisitorDetails={setVisitorDetails}
+          visitorDetails={visitorDetails}
+        />
+      )}
+    </>
   );
 };
+
+

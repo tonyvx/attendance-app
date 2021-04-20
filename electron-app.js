@@ -1,12 +1,14 @@
-const { app, BrowserWindow, Menu, ipcMain, Notification } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 const path = require("path");
+const fs = require("fs");
 const contextMenu = require("electron-context-menu");
 const {
   submenu,
   findAttendee,
   readAndPublishCSV,
   sendMessage,
-  updateRegistrations,openCSVFile
+  updateRegistrations,
+  openCSVFile,
 } = require("./electron-app/utils");
 
 contextMenu({});
@@ -83,9 +85,32 @@ ipcMain.on("toMain_Attendee", (event, scanData) => {
 
 ipcMain.on("toMain_Upload", (event, fileName) => {
   console.log("channel: toMain_Upload (openCVS) :", fileName);
-  openCSVFile(mainWindow, fileName)
+  openCSVFile(mainWindow, fileName);
 });
-
+ipcMain.on("toMain_NewAttendee", (event, attendeeInfo) => {
+  console.log("channel: toMain_NewAttendee (findAttendee) :", attendeeInfo);
+  if (!attendeeInfo || !attendeeInfo.id) return;
+  const attendeeFile = app.getPath("home") + "/.attendance-app/attendees.csv";
+  const message =
+    "\r\n" +
+    attendeeInfo.family +
+    "," +
+    attendeeInfo.family +
+    "," +
+    "," +
+    attendeeInfo.phone +
+    "," +
+    attendeeInfo.emails +
+    "," +
+    attendeeInfo.id;
+  fs.appendFile(attendeeFile, message, function (err) {
+    if (err) throw err;
+    console.log("updated!");
+    sendMessage(
+      "Your details have been updated. Continue with confirming attendance"
+    );
+  });
+});
 
 ipcMain.on("toMain_ConfirmAttendance", (event, registrationInfo) => {
   console.log(

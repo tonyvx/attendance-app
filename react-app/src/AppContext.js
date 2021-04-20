@@ -17,6 +17,7 @@ export const initialState = {
     attendees: false,
     registration: false,
   },
+  newRegPopper: true,
 };
 
 export const reducer = (context, action) => {
@@ -68,6 +69,12 @@ export const reducer = (context, action) => {
         ...context,
         scanData: action.scanData,
       };
+    case "NEW_REG_POPPER":
+      return {
+        ...context,
+        newRegPopper: action.newRegPopper,
+      };
+
     case "POPPER":
       return {
         ...context,
@@ -83,10 +90,24 @@ export const reducer = (context, action) => {
         ...context,
         scanData: "No result",
       };
+    case "VIEW":
+      return {
+        ...context,
+        view: action.view,
+      };
 
     default:
       return context;
   }
+};
+export const setView = (dispatch, view) => {
+  dispatch({ type: "VIEW", view });
+  if (!view) {
+    setNewRegPopper(dispatch, true);
+  }
+};
+export const setNewRegPopper = (dispatch, newRegPopper) => {
+  dispatch({ type: "NEW_REG_POPPER", newRegPopper });
 };
 
 export const setFooterInfo = (dispatch, footerInfo) => {
@@ -107,8 +128,13 @@ export const setAttentdees = (dispatch, data) => {
   setPopper(dispatch, { attendees: true });
 };
 
+export const updateAttentdees = (data) => {
+  window.api.send("toMain_NewAttendee", data);
+};
+
 export const setAttentdeeInfo = (dispatch, attendeeInfo) => {
   dispatch({ type: "ATTENDEE", attendeeInfo });
+  updateAttentdees(attendeeInfo);
 };
 export const setRegistrationInfo = (dispatch, registrationInfo) => {
   dispatch({ type: "REGISTRATION_INFO", registrationInfo });
@@ -138,6 +164,25 @@ export const popperData = (context) => {
   };
 };
 
+export const validVisitorDetails = (form) => {
+  let valid = !!form.name && !!form.adult && !!form.email && !!form.phone;
+  if (valid) {
+    var emailPattern = new RegExp(
+      /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
+    );
+    var phoneRegEx = new RegExp(
+      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+    );
+    return (
+      emailPattern.test(form.email) &&
+      phoneRegEx.test(form.phone) &&
+      form.phone.match(/\d/g).length === 10
+    );
+  } else {
+    return valid;
+  }
+};
+
 export const registrationInfoComplete = (
   attendeeInfo,
   selectedEvent,
@@ -163,6 +208,7 @@ export const register = (dispatch, attendeInfo, selectedEvent, count) => {
   setSelectedEvent(dispatch, {});
   setCount(dispatch, { adultCount: 0, childrenCount: 0 });
   resetScan(dispatch);
+  setNewRegPopper(dispatch, true);
 };
 
 export const sendMessage = (message) => {

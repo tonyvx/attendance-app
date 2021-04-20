@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld("api", {
       "toMain",
       "toMain_Events",
       "toMain_Attendee",
+      "toMain_NewAttendee",
       "toMain_ConfirmAttendance",
       "toMain_Upload",
     ];

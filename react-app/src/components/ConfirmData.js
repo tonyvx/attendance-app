@@ -18,6 +18,9 @@ export const useStyles = makeStyles((theme) => ({
     width: "90%",
     margin: theme.spacing(2),
   },
+  button: {
+    margin: theme.spacing(1),
+  },
 }));
 
 function CustomToolbar() {
@@ -74,11 +77,25 @@ export const ConfirmData = () => {
           </Container>
         </Grid>
         <Grid item xs={12} className={classes.headerAndFooter}>
-          <Button onClick={() => setPopper(dispatch)}>CLOSE</Button>
+          <Container>
+            <Button
+              className={classes.button}
+              variant="outlined"
+              onClick={() => setPopper(dispatch)}
+            >
+              CLOSE
+            </Button>
 
-          {showUploadButton && (
-            <Button onClick={() => uploadFile(title)}>Upload</Button>
-          )}
+            {showUploadButton && (
+              <Button
+                className={classes.button}
+                variant="outlined"
+                onClick={() => uploadFile(title)}
+              >
+                Upload
+              </Button>
+            )}
+          </Container>
         </Grid>
       </Grid>
     </Paper>
