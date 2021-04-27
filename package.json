@@ -9,11 +9,12 @@
     "@electron-forge/maker-deb": "^6.0.0-beta.54",
     "@electron-forge/maker-rpm": "^6.0.0-beta.54",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
-    "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@electron-forge/maker-wix": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "electron": "^12.0.2",
     "electron-builder": "^22.10.5",
-    "electron-installer-debian": "^3.1.0"
+    "electron-installer-debian": "^3.1.0",
+    "snyk": "^1.568.0"
   },
   "scripts": {
     "start": "electron-forge start",
@@ -21,7 +22,8 @@
     "watch": " cd react-app/; npm i;npm run watch; cd ..",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "debian": "electron-installer-debian --arch amd64 --config debian.json"
+    "debian": "electron-installer-debian --arch amd64 --config debian.json",
+    "test": "snyk test"
   },
   "dependencies": {
     "camelcase": "^6.2.0",
