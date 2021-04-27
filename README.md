@@ -1,3 +1,6 @@
+[![Known Vulnerabilities](https://snyk.io/test/github/tonyvx/attendance-app/badge.svg)](https://snyk.io/test/github/tonyvx/attendance-app)
+
+
 # Create Electron starter app
 
 ## Folder structure
