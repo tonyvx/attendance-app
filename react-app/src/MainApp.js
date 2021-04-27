@@ -1,6 +1,4 @@
-import {
-  SwipeableDrawer,
-} from "@material-ui/core";
+import { SwipeableDrawer } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -93,5 +91,3 @@ export const MainApp = () => {
     </>
   );
 };
-
-

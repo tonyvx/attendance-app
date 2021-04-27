@@ -2,6 +2,7 @@ const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const contextMenu = require("electron-context-menu");
+
 const {
   submenu,
   findAttendee,

@@ -1,6 +1,7 @@
 import {
   Button,
   Checkbox,
+  Container,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -9,6 +10,8 @@ import {
   TextField,
 } from "@material-ui/core";
 import React, { useState } from "react";
+import Keyboard from "react-simple-keyboard";
+import "react-simple-keyboard/build/css/index.css";
 import {
   AppContext,
   setAttentdeeInfo,
@@ -19,7 +22,40 @@ import { useStyles } from "../MainApp";
 export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
   const classes = useStyles();
   const [form, setForm] = useState({});
+  const [field, setField] = useState("");
+  const [layoutName, setLayoutName] = useState("default");
+  const [keyboard, setKeyboard] = useState(null);
   const { dispatch } = React.useContext(AppContext);
+
+  const layouts = {
+    default: [
+      "0 1 2 3 4 5 6 7 8 9 {bksp}",
+      "Q W E R T Y U I O P",
+      "A S D F G H J K L {enter}",
+      "Z X C V B N M ( ) - _ .",
+      "{space}",
+    ],
+    email: [
+      "0 1 2 3 4 5 6 7 8 9 {bksp}",
+      "Q W E R T Y U I O P",
+      "A S D F G H J K L {enter}",
+      "Z X C V B N M ( ) - _ .",
+      "@ {space} .com",
+      "@GAMAIL.COM @YAHOO.COM @HOTMAIL.COM",
+    ],
+    phone: ["1 2 3", "4 5 6", "7 8 9", "{space} 0 {bksp}"],
+  };
+
+  const setInput = (name, value) => handleChange({ target: { name, value } });
+
+  const onKeyPress = (button) => {
+    console.log("Button pressed", button);
+
+    /**
+     * If you want to handle the shift and caps lock buttons
+     */
+    if (button === "{enter}");
+  };
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -45,7 +81,7 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
       open={visitorDetails}
       onClose={() => setVisitorDetails(false)}
       aria-labelledby="form-dialog-title"
-      style={{ height: "80vh", width: "80vw" }}
+      style={{ height: 600, width: "80vw" }}
     >
       <DialogContent>
         <DialogTitle className={classes.dialog}>Visitor Details</DialogTitle>
@@ -54,7 +90,16 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
             <TextField
               id="email"
               label="Primary Email"
-              onChange={handleChange}
+              value={form.email}
+              onChange={(e) => e.preventDefault()}
+              onFocus={(e) => focus(e)}
+              onClick={(e) => {
+                setField("email");
+                keyboard.clearInput();
+                keyboard.setInput(form["email"]);
+                keyboard.setCaretPosition(e.target.selectionStart);
+                setLayoutName("email");
+              }}
               inputProps={{
                 name: "email",
                 id: "event-native-simple",
@@ -64,8 +109,17 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
           <Grid item xs={6} className={classes.dialog}>
             <TextField
               id="phone"
+              value={form.phone}
               label="Primary Phone"
-              onChange={handleChange}
+              onChange={(e) => e.preventDefault()}
+              onFocus={(e) => focus(e)}
+              onClick={(e) => {
+                setField("phone");
+                keyboard.clearInput();
+                keyboard.setInput(form["phone"]);
+                keyboard.setCaretPosition(e.target.selectionStart);
+                setLayoutName("phone");
+              }}
               inputProps={{
                 name: "phone",
                 id: "event-native-simple",
@@ -76,10 +130,19 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
             <TextField
               id="name"
               label="Name"
-              onChange={handleChange}
+              value={form.name}
               inputProps={{
                 name: "name",
                 id: "event-native-simple",
+              }}
+              onChange={(e) => e.preventDefault()}
+              onFocus={(e) => focus(e)}
+              onClick={(e) => {
+                setField("name");
+                keyboard.clearInput();
+                keyboard.setInput(form["name"]);
+                keyboard.setCaretPosition(e.target.selectionStart);
+                setLayoutName("default");
               }}
             ></TextField>
           </Grid>
@@ -119,8 +182,33 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
               confirm
             </Button>
           </Grid>
+          <Grid item xs={12} className={classes.dialog}>
+            <Container
+              id="keyboard"
+              style={{
+                color: "grey",
+                width: "100%",
+              }}
+            >
+              <Keyboard
+                keyboardRef={(r) => {
+                  setKeyboard(r);
+                }}
+                layoutName={"default"}
+                onChange={(e) => {
+                  setInput(field, e);
+                }}
+                layout={{ default: layouts[layoutName] }}
+              />
+            </Container>
+          </Grid>
         </Grid>
       </DialogContent>
     </Dialog>
   );
 };
+const focus = (e) =>
+  e.currentTarget.setSelectionRange(
+    e.currentTarget.value.length || 0,
+    e.currentTarget.value.length || 0
+  );

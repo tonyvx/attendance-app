@@ -15,7 +15,7 @@ export const VisitorParishionerDialog = ({ setVisitorDetails }) => {
     >
       <DialogContent>
         <Grid container direction="row" justify="center" alignItems="center">
-          <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid item xs={6} style={{ textAlign: "left" }}>
             <Button
               variant="outlined"
               onClick={() => {
@@ -27,7 +27,7 @@ export const VisitorParishionerDialog = ({ setVisitorDetails }) => {
               VISITOR
             </Button>
           </Grid>
-          <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid item xs={6} style={{ textAlign: "right" }}>
             <Button
               variant="outlined"
               onClick={() => {
