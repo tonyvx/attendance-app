@@ -14,8 +14,14 @@ export const VisitorParishionerDialog = ({ setVisitorDetails }) => {
       style={{ height: "80vh", width: "80vw" }}
     >
       <DialogContent>
-        <Grid container direction="row" justify="center" alignItems="center">
-          <Grid item xs={6} style={{ textAlign: "left" }}>
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
+          style={{ width: 312 }}
+        >
+          <Grid item xs={6} style={{ textAlign: "center", width: 132 }}>
             <Button
               variant="outlined"
               onClick={() => {
@@ -27,7 +33,7 @@ export const VisitorParishionerDialog = ({ setVisitorDetails }) => {
               VISITOR
             </Button>
           </Grid>
-          <Grid item xs={6} style={{ textAlign: "right" }}>
+          <Grid item xs={6} style={{ textAlign: "center", width: 132 }}>
             <Button
               variant="outlined"
               onClick={() => {

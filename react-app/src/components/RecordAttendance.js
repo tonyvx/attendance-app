@@ -69,6 +69,7 @@ export const RecordAttendance = () => {
         <TextField
           id="adultCount"
           label="Adult Count"
+          type="number"
           value={count.adultCount}
           onChange={handleChange}
           inputProps={{
@@ -82,6 +83,7 @@ export const RecordAttendance = () => {
         <TextField
           id="childrenCount"
           label="Children Count"
+          type="number"
           value={count.childrenCount}
           onChange={handleChange}
           inputProps={{

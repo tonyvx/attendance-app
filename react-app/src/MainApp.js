@@ -1,6 +1,6 @@
 import { SwipeableDrawer } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppContext,
   popperData,
@@ -33,8 +33,6 @@ export const MainApp = () => {
 
   const [visitorDetails, setVisitorDetails] = useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
-
-  const _ref = useRef();
 
   useEffect(() => {
     window.api.receive("fromMain_FooterInfo", (footerInfo1) =>
@@ -71,7 +69,7 @@ export const MainApp = () => {
 
   return (
     <>
-      <Scanner ref={_ref} />
+      <Scanner />
       <SwipeableDrawer
         style={{ height: "90vh", width: "90vw" }}
         anchor="top"

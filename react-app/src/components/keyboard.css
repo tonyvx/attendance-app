@@ -1,0 +1,6 @@
+.simple-keyboard.hg-layout-default .hg-button.button-disabled {
+  background: grey;
+  color: grey;
+  pointer-events: none;
+  cursor: default;
+}

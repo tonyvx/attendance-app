@@ -18,10 +18,11 @@ import {
   validVisitorDetails,
 } from "../AppContext";
 import { useStyles } from "../MainApp";
+import "./keyboard.css";
 
 export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
   const classes = useStyles();
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({ email: "", phone: "", name: "" });
   const [field, setField] = useState("");
   const [layoutName, setLayoutName] = useState("default");
   const [keyboard, setKeyboard] = useState(null);
@@ -29,24 +30,26 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
 
   const layouts = {
     default: [
-      "0 1 2 3 4 5 6 7 8 9 {bksp}",
+      "1 2 3 4 5 6 7 8 9 0 - {bksp}",
       "Q W E R T Y U I O P",
       "A S D F G H J K L {enter}",
-      "Z X C V B N M ( ) - _ .",
+      "Z X C V B N M ( ) _ .",
       "{space}",
+      "blank",
     ],
     email: [
-      "0 1 2 3 4 5 6 7 8 9 {bksp}",
+      "1 2 3 4 5 6 7 8 9 0 - {bksp}",
       "Q W E R T Y U I O P",
       "A S D F G H J K L {enter}",
-      "Z X C V B N M ( ) - _ .",
+      "Z X C V B N M ( ) _ .",
       "@ {space} .com",
-      "@GAMAIL.COM @YAHOO.COM @HOTMAIL.COM",
+      "@GMAIL.COM @YAHOO.COM @HOTMAIL.COM",
     ],
-    phone: ["1 2 3", "4 5 6", "7 8 9", "{space} 0 {bksp}"],
+    phone: ["1 2 3", "4 5 6", "7 8 9", "{space} 0 {bksp}", "blank", "blank"],
   };
 
-  const setInput = (name, value) => handleChange({ target: { name, value } });
+  const setInput = (name, value) =>
+    !!name && handleChange({ target: { name, value } });
 
   const onKeyPress = (button) => {
     console.log("Button pressed", button);
@@ -61,7 +64,10 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
     const name = event.target.name;
     setForm({
       ...form,
-      [name]: !!event.target.value ? event.target.value : event.target.checked,
+      [name]:
+        !!event.target.value || event.target.value === ""
+          ? event.target.value
+          : event.target.checked,
     });
   };
 
@@ -81,7 +87,7 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
       open={visitorDetails}
       onClose={() => setVisitorDetails(false)}
       aria-labelledby="form-dialog-title"
-      style={{ height: 600, width: "80vw" }}
+      style={{ height: 630, width: "80vw" }}
     >
       <DialogContent>
         <DialogTitle className={classes.dialog}>Visitor Details</DialogTitle>
@@ -89,15 +95,12 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
           <Grid item xs={6} className={classes.dialog}>
             <TextField
               id="email"
-              label="Primary Email"
+              helperText="Primary Email"
               value={form.email}
               onChange={(e) => e.preventDefault()}
               onFocus={(e) => focus(e)}
               onClick={(e) => {
                 setField("email");
-                keyboard.clearInput();
-                keyboard.setInput(form["email"]);
-                keyboard.setCaretPosition(e.target.selectionStart);
                 setLayoutName("email");
               }}
               inputProps={{
@@ -110,14 +113,11 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
             <TextField
               id="phone"
               value={form.phone}
-              label="Primary Phone"
+              helperText="Primary Phone"
               onChange={(e) => e.preventDefault()}
               onFocus={(e) => focus(e)}
               onClick={(e) => {
                 setField("phone");
-                keyboard.clearInput();
-                keyboard.setInput(form["phone"]);
-                keyboard.setCaretPosition(e.target.selectionStart);
                 setLayoutName("phone");
               }}
               inputProps={{
@@ -129,7 +129,7 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
           <Grid item xs={6} className={classes.dialog}>
             <TextField
               id="name"
-              label="Name"
+              helperText="Name"
               value={form.name}
               inputProps={{
                 name: "name",
@@ -139,9 +139,7 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
               onFocus={(e) => focus(e)}
               onClick={(e) => {
                 setField("name");
-                keyboard.clearInput();
-                keyboard.setInput(form["name"]);
-                keyboard.setCaretPosition(e.target.selectionStart);
+
                 setLayoutName("default");
               }}
             ></TextField>
@@ -175,8 +173,6 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
                   emails: form.email,
                   id: uuidv4(),
                 });
-
-                console.log(form);
               }}
             >
               confirm
@@ -191,14 +187,21 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
               }}
             >
               <Keyboard
+                inputName={field}
                 keyboardRef={(r) => {
                   setKeyboard(r);
                 }}
                 layoutName={"default"}
                 onChange={(e) => {
-                  setInput(field, e);
+                  setInput(field, e || "");
                 }}
                 layout={{ default: layouts[layoutName] }}
+                buttonTheme={[
+                  {
+                    class: "button-disabled",
+                    buttons: "blank",
+                  },
+                ]}
               />
             </Container>
           </Grid>
