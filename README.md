@@ -87,20 +87,22 @@ npm run make
 
 ## Code splitting
 
-[code-splitting](https://reactjs.org/docs/code-splitting.html)
-[cost-of-modules](https://github.com/siddharthkp/cost-of-modules)
-[react-lazy-without-default-export](https://dev.to/iamandrewluca/react-lazy-without-default-export-4b65)
-[how-to-make-your-electron-app-faster-4ifb](https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb)
-[webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer)
+- [code-splitting](https://reactjs.org/docs/code-splitting.html)
+- [cost-of-modules](https://github.com/siddharthkp/cost-of-modules)
+- [react-lazy-without-default-export](https://dev.to/iamandrewluca/react-lazy-without-default-export-4b65)
+- [how-to-make-your-electron-app-faster-4ifb](https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb)
+- [webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer)
 
 ## References
 
-[www.electronjs.org/quick-start](https://www.electronjs.org/docs/tutorial/quick-start)
-[package-and-distribute-the-application](https://www.electronjs.org/docs/tutorial/quick-start#package-and-distribute-the-application)
-[electron-installer-debian#installation](https://github.com/electron-userland/electron-installer-debian#installation)
+- [www.electronjs.org/quick-start](https://www.electronjs.org/docs/tutorial/quick-start)
+- [package-and-distribute-the-application](https://www.electronjs.org/docs/tutorial/quick-start#package-and-distribute-the-application)
+- [electron-installer-debian#installation](https://github.com/electron-userland/electron-installer-debian#installation)
 
+```sh
 npx electron-packager . app --platform linux --arch x64 --out dist
 npx electron-installer-debian --src dist/app-linux-x64/ --dest dist/installers/ --arch amd64
+```
 
-[electron-installer-debian-package](https://www.christianengvall.se/electron-installer-debian-package/)
-[open dialog](https://www.electronjs.org/docs/api/dialog)
+- [electron-installer-debian-package](https://www.christianengvall.se/electron-installer-debian-package/)
+- [open dialog](https://www.electronjs.org/docs/api/dialog)
