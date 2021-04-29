@@ -1,6 +1,6 @@
 import { SwipeableDrawer } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import {
   AppContext,
   popperData,
@@ -10,10 +10,30 @@ import {
   setFooterInfo,
   setRegistrationInfo,
 } from "./AppContext";
-import { ConfirmData } from "./components/ConfirmData";
-import { Scanner } from "./components/Scanner";
-import { VisitorDetailsDialog } from "./components/VisitorDetailsDialog";
-import { VisitorParishionerDialog } from "./components/VisitorParishionerDialog";
+
+const ConfirmData = React.lazy(() =>
+  import("./components/ConfirmData").then((module) => ({
+    default: module.ConfirmData,
+  }))
+);
+
+const Scanner = React.lazy(() =>
+  import("./components/Scanner").then((module) => ({
+    default: module.Scanner,
+  }))
+);
+
+const VisitorDetailsDialog = React.lazy(() =>
+  import("./components/VisitorDetailsDialog").then((module) => ({
+    default: module.VisitorDetailsDialog,
+  }))
+);
+
+const VisitorParishionerDialog = React.lazy(() =>
+  import("./components/VisitorParishionerDialog").then((module) => ({
+    default: module.VisitorParishionerDialog,
+  }))
+);
 
 export const useStyles = makeStyles((theme) => ({
   headerAndFooter: {
@@ -68,8 +88,8 @@ export const MainApp = () => {
   );
 
   return (
-    <>
-      <Scanner />
+    <Suspense fallback={<div>Loading...</div>}>
+      {<Scanner />}
       <SwipeableDrawer
         style={{ height: "90vh", width: "90vw" }}
         anchor="top"
@@ -79,13 +99,13 @@ export const MainApp = () => {
       >
         <ConfirmData />
       </SwipeableDrawer>
-      <VisitorParishionerDialog setVisitorDetails={setVisitorDetails} />
+      {<VisitorParishionerDialog setVisitorDetails={setVisitorDetails} />}
       {visitorDetails && (
         <VisitorDetailsDialog
           setVisitorDetails={setVisitorDetails}
           visitorDetails={visitorDetails}
         />
       )}
-    </>
+    </Suspense>
   );
 };

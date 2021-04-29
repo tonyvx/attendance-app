@@ -1,9 +1,9 @@
 import { Grid, Paper, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { AppContext } from "../AppContext";
 import { RecordAttendance } from "./RecordAttendance";
 import { ScanAttendance } from "./ScanAttendance";
-import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
   headerAndFooter: {
