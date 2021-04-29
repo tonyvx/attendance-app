@@ -1,4 +1,4 @@
-import { Button, Grid, TextField } from "@material-ui/core";
+import { Button, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import {
@@ -66,32 +66,58 @@ export const RecordAttendance = () => {
         <EventSelector />
       </Grid>
       <Grid item xs={6} className={classes.rightText}>
-        <TextField
+        <InputLabel shrink htmlFor="age-native-label-placeholder">
+          Adult Count
+        </InputLabel>
+        <Select
+          labelId="adultCount"
           id="adultCount"
           label="Adult Count"
-          type="number"
-          value={count.adultCount}
+          value={count.adultCount || 1}
           onChange={handleChange}
           inputProps={{
             name: "adultCount",
             id: "event-native-simple",
           }}
-          className={classes.rightAlignTextField}
-        />
+          style={{ marginRight: 8, textAlign: "center", width: 192 }}
+        >
+          {Array(9)
+            .fill(0)
+            .map((f, i) => (
+              <MenuItem key={i} value={i + 1}>
+                {i + 1}
+              </MenuItem>
+            ))}
+        </Select>
       </Grid>
       <Grid item xs={6} className={classes.leftText}>
-        <TextField
+        <InputLabel
+          shrink
+          htmlFor="age-native-label-placeholder"
+          style={{ marginLeft: 8, textAlign: "center" }}
+        >
+          Children Count
+        </InputLabel>
+        <Select
+          labelId="childrenCount"
           id="childrenCount"
           label="Children Count"
-          type="number"
-          value={count.childrenCount}
+          value={count.childrenCount || 0}
           onChange={handleChange}
           inputProps={{
             name: "childrenCount",
             id: "event-native-simple",
           }}
-          className={classes.leftAlignTextField}
-        />
+          style={{ marginLeft: 8, textAlign: "center", width: 192 }}
+        >
+          {Array(9)
+            .fill(0)
+            .map((f, i) => (
+              <MenuItem key={i} value={i}>
+                {i}
+              </MenuItem>
+            ))}
+        </Select>
       </Grid>
       <Grid item xs={12} className={classes.paper}>
         <Button
