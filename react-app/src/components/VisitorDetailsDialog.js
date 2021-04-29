@@ -64,10 +64,7 @@ export const VisitorDetailsDialog = ({ visitorDetails, setVisitorDetails }) => {
     const name = event.target.name;
     setForm({
       ...form,
-      [name]:
-        !!event.target.value || event.target.value === ""
-          ? event.target.value
-          : event.target.checked,
+      [name]: event.target.value || event.target.checked || "",
     });
   };
 
