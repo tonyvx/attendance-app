@@ -1,4 +1,11 @@
-import { Button, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
+import {
+  Button,
+  Container,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import {
@@ -65,59 +72,59 @@ export const RecordAttendance = () => {
       <Grid item xs={12} className={classes.paper}>
         <EventSelector />
       </Grid>
-      <Grid item xs={6} className={classes.rightText}>
-        <InputLabel shrink htmlFor="age-native-label-placeholder">
-          Adult Count
-        </InputLabel>
-        <Select
-          labelId="adultCount"
-          id="adultCount"
-          label="Adult Count"
-          value={count.adultCount || 1}
-          onChange={handleChange}
-          inputProps={{
-            name: "adultCount",
-            id: "event-native-simple",
-          }}
-          style={{ marginRight: 8, textAlign: "center", width: 192 }}
-        >
-          {Array(9)
-            .fill(0)
-            .map((f, i) => (
-              <MenuItem key={i} value={i + 1}>
-                {i + 1}
-              </MenuItem>
-            ))}
-        </Select>
-      </Grid>
-      <Grid item xs={6} className={classes.leftText}>
-        <InputLabel
-          shrink
-          htmlFor="age-native-label-placeholder"
-          style={{ marginLeft: 8, textAlign: "center" }}
-        >
-          Children Count
-        </InputLabel>
-        <Select
-          labelId="childrenCount"
-          id="childrenCount"
-          label="Children Count"
-          value={count.childrenCount || 0}
-          onChange={handleChange}
-          inputProps={{
-            name: "childrenCount",
-            id: "event-native-simple",
-          }}
-          style={{ marginLeft: 8, textAlign: "center", width: 192 }}
-        >
-          {Array(9)
-            .fill(0)
-            .map((f, i) => (
-              <MenuItem key={i} value={i}>
-                {i}
-              </MenuItem>
-            ))}
-        </Select>
+      <Grid item xs={12} className={classes.paper}>
+        <Container style={{ width: 350 }}>
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid item xs={6} className={classes.paper}>
+              <InputLabel shrink htmlFor="adultCount">
+                Adult Count
+              </InputLabel>
+              <Select
+                labelId="adultCount"
+                id="adultCount"
+                label="Adult Count"
+                value={count.adultCount || 1}
+                onChange={handleChange}
+                inputProps={{
+                  name: "adultCount",
+                  id: "adultCount",
+                }}
+              >
+                {Array(9)
+                  .fill(0)
+                  .map((f, i) => (
+                    <MenuItem key={i} value={i + 1}>
+                      {i + 1}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </Grid>
+            <Grid item xs={6} className={classes.paper}>
+              <InputLabel shrink htmlFor="childrenCount">
+                Children Count
+              </InputLabel>
+              <Select
+                labelId="childrenCount"
+                id="childrenCount"
+                label="Children Count"
+                value={count.childrenCount || 0}
+                onChange={handleChange}
+                inputProps={{
+                  name: "childrenCount",
+                  id: "childrenCount",
+                }}
+              >
+                {Array(9)
+                  .fill(0)
+                  .map((f, i) => (
+                    <MenuItem key={i} value={i}>
+                      {i}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </Grid>
+          </Grid>
+        </Container>
       </Grid>
       <Grid item xs={12} className={classes.paper}>
         <Button

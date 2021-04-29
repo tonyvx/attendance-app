@@ -11,7 +11,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   panels: {
     textAlign: "center",
-    height: "90vh",
+    height: "90vh"
   },
   dialog: {
     textAlign: "center",
