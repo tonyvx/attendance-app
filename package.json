@@ -27,7 +27,7 @@
     "wbpk-anlyz": "cd react-app/; npm run wbpk-anlyz; cd.."
   },
   "dependencies": {
-    "camelcase": "^6.2.0",
+    "camelcase": "^6.3.0",
     "csv-parser": "^3.0.0",
     "date-fns": "^2.24.0",
     "electron-context-menu": "^2.5.2",
